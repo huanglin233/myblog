@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://192.168.56.3/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
+      username: root
+      password: root
+      filters: stat,wall,log4j,config
+      max-active: 100
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 50
+      max-pool-prepared-statement-per-connection-size: 20
+  main:
+    allow-bean-definition-overriding: true
+  devtools:
+    restart:
+      enabled: true
+  redis:
+     host: 192.168.56.3
+     port: 6379
+     jedis:
+        pool:
+           max-active: -1
+           max-wait: 3000ms
+     timeout: 3000ms
+mybatis:
+  configuration:
+     map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.hl.myblog.po
+#FastDfs的配置
+StorageIP: 192.168.56.3:8888
+fdfs:
+   connect-timeout: 1000            #读取inputsream阻塞时间 
+   so-timeout: 3000
+   trackerList: 192.168.56.3:22122 #tracker地址
+   thumb-image:                     #缩略图生成参数
+      width: 150
+      height: 150
+   web-server-url: http://${StorageIP}/
+logging: 
+      level:
+       root: info
+       com.hl.myblog: debug
+       com.hl.myblog.dao: debug
+      file:
+       name: log/myblog-dev.log
+swagger2:
+      enale: true
