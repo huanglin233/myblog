@@ -9,14 +9,15 @@
                     <router-link to="/admin/tags"  class="teal active item">列表</router-link>
                 </div>
             </div>
-        </div>   
+        </div>
+
         <!--中间内容-->
         <div class="m-container-small m-padded-tb-big">
             <div class="ui container">
-                <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                <div class="ui success message" v-if="errorMsg">
                     <i class="close icon" @click="closeBox"></i>
                     <div class="header">提示：</div>
-                    <p th:text="${message}"></p>
+                    <p v-text="errotMsgDesc"></p>
                 </div>
                 <table class="ui compact teal celled table stackable">
                     <thead>
@@ -27,23 +28,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="tag, startIndex : ${page.list}">
-                            <td th:text="${startIndex.count}"></td>
-                            <td th:text="${tag.name}"></td>
+                        <tr v-for="(item, index) in tags.list" :key="index">
+                            <td v-text="index + 1"></td>
+                            <td v-text="item.name"></td>
                             <td>
-                                <a href="#" th:href="@{'/admin/tags/edit/' + ${tag.id} }" class="ui mini teal basic button">编辑</a>
-                                <a href="#" th:href="@{'/admin/delete/tag/' + ${tag.id}}" class="ui mini red basic button">删除</a>
+                                <router-link :to="'/admin/editTag?tagId=' + item.id" class="ui mini teal basic button">编辑</router-link>
+                                <a class="ui mini red basic button" @click="deleteTagById(item.id)">删除</a>
                             </td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="6">
-                                <div clas="ui mini pagination menu" th:if="${page.pages} > 1">
-                                    <a href="#" th:href="@{/admin/tags(page=${page.pageNum} - 1)}" class="item" th:unless="${page.hasPreviousPage}">上一页</a>
-                                    <a href="#" th:href="@{/admin/tags(page=${page.pageNum} + 1)}" class="item" th:unless="${page.hasNextPage}">下一页</a>
+                            <th colspan="6" >
+                                <div class="ui mini pagination secondary menu" v-if="tags.hasNextPage || tags.hasPreviousPage">
+                                    <a class="ui mini floated teal basic button item" v-if="tags.hasPreviousPage" @click="queryTagList(tags.pageNum - 1, 5)">上一页</a>
+                                    <a class="ui mini floated teal basic button item" v-if="tags.hasNextPage" @click="queryTagList(tags.pageNum + 1, 5)">下一页</a>
                                 </div>
-                                    <a href="#" th:href="@{/admin/tags/add}" class="ui mini right floated teal basic button">新增</a>
+                                <router-link to="/admin/editTag" class="ui mini right floated teal basic button">新增</router-link>
                             </th>
                         </tr>
                     </tfoot>
@@ -55,11 +56,15 @@
     </div>
 </template>
 <script>
+import {queryTagList, deleteTagById} from '../../api/tag'
+
 export default {
     name : 'tags',
     data() {
         return {
-
+            errorMsg     : false,
+            errotMsgDesc : '操作错误',
+            tags         : []
         }
     },
     mounted() {
@@ -67,11 +72,27 @@ export default {
     },
     methods: {
         init : function() {
-
+            this.queryTagList(1, 5);
         },
+
         closeBox : function(e) {
             var messageBox = e.target;
             $(messageBox).closest(".message").transition('fade');
+        },
+
+        queryTagList : function(pageNum, pageSize) {
+            let ref = this;
+            queryTagList(pageNum, pageSize).then(response => {
+                console.log(response.data.list);
+                ref.tags = response.data;
+            })
+        },
+
+        deleteTagById : function(id) {
+            let ref = this;
+            deleteTagById(id).then(response => {
+                ref.queryTagList(1, 5);
+            })
         }
     }
 }

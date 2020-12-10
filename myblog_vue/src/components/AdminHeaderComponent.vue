@@ -6,7 +6,7 @@
                 <h2 class="ui teal header item">博客后台</h2>
                 <router-link to="/admin/blogs" class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'blogs'}"><i class="mini home icon m-padded-ri-min"></i>博客</router-link>
                 <router-link to="/admin/types" class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'types'}"><i class="mini idea icon  m-padded-ri-min"></i>分类</router-link>
-                <router-link to="/admin/tags"  class="m-item item m-mobile-hide" v-bind:class="{actove : AdminHeader == 'tags'}"><i class="mini tags icon  m-padded-ri-min"></i>标签</router-link>
+                <router-link to="/admin/tags"  class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'tags'}"><i class="mini tags icon  m-padded-ri-min"></i>标签</router-link>
                 <div class="right m-item m-mobile-hide menu">
                     <div class="ui dropdown item">
                         <div class="text">
@@ -39,7 +39,15 @@ export default {
 
         }
     },
+    mounted() {
+        this.init();
+    },
     methods: {
+        init() {
+            $('.ui.dropdown').dropdown({
+                on: 'hover'
+            })
+        },
         togglessCalss : function() {
            $('.m-item').toggleClass("m-mobile-hide");
         },

@@ -76,7 +76,8 @@ export default {
             event.preventDefault();
             login(fields).then(res => {
               if(res.code === 200) {
-                ref.$router.push('/admin/index');
+                // ref.$router.push('/admin/index');
+                window.history.go(-1);
               } else {
                   ref.hiddens = false;
                   ref.message = res.msg + " :用户名和密码错误";

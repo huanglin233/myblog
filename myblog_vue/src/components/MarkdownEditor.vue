@@ -63,11 +63,11 @@ export default {
         /**
          * editormd挂载元素的id
          */
-        content:{
+        content :{
             type:String,
             default:uuid()
         },
-        markdown: {
+        markdown : {
             type: String,
             default: "请输入文本"
         },
@@ -111,7 +111,7 @@ export default {
 
         getContent() {
             return this.editor.getMarkdown();
-        }
+        },
     }
 }
 </script>

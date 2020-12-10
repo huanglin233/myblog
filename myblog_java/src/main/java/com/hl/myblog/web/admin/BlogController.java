@@ -1,5 +1,7 @@
 package com.hl.myblog.web.admin;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,8 @@ public class BlogController {
             blog.setUser(user);
             blog.setType(typeServiceImpl.getType(blog.getTypeId()));
             blog.setTags(tagServiceImpl.getTagList(blog.getTagIds()));
+            blog.setCreateTime(new Date());
+            blog.setUpdateTime(new Date());
             int saveResult = blogServiceImpl.saveBlog(blog);
             if(saveResult == 1) {
                 return ResponseResult.success();
@@ -77,6 +81,7 @@ public class BlogController {
             blog.setUser(user);
             blog.setType(typeServiceImpl.getType(blog.getTypeId()));
             blog.setTags(tagServiceImpl.getTagList(blog.getTagIds()));
+            blog.setUpdateTime(new Date());
             int saveResult = blogServiceImpl.updateBlog(blog);
             if(saveResult == 1) {
                 return ResponseResult.success();
@@ -88,7 +93,7 @@ public class BlogController {
 
     @ApiOperation(value = "删除博客", notes = "删除博客接口")
     @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
-    @DeleteMapping("/blogs/delete/{id}")
+    @DeleteMapping("/blog/delete/{id}")
     public ResponseResult delete(@PathVariable(value = "id") Long id) {
         int deleteResult = blogServiceImpl.deleteBlog(id);
         if(deleteResult == 1) {

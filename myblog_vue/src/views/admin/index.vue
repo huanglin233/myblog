@@ -18,6 +18,13 @@ export default {
     name : 'adminIndex',
     data() {
         return {
+        }
+    },
+    mounted() {
+
+    },
+    methods : {
+        init : function() {
 
         }
     }

@@ -29,28 +29,18 @@
                             <input type="text" name="title" placeholder="标题" v-model="blog.title">
                         </div>
                     </div>
-                    <MarkdownEditor content="content" :markdown="blog.content" ref="markDownEditor" style="z-index: 1"></MarkdownEditor>
-                    <div class="field">
-                        <div id="md-content" style="z-index: 1 !important;">
-                            <textarea placeholder="博客内容" name="content" style="display: none" ></textarea>
-                        </div>
-                    </div>
-
-                    <div class="required field">
-                        <div id="md-content">
-                            <textarea placeholder="博客内容" name="content" style="display: none;" ></textarea>
-                        </div>
-                    </div>
+                    <MarkdownEditor v-if="blog.content != null || blog.content != undefined" content="content" :markdown="blog.content" ref="markDownEditor" style="z-index: 1"></MarkdownEditor>
                     <div class="two fields">
                         <div class="required field">
                             <div class="ui left labeled action input">
                                 <label class="ui compact teal basic label">分类</label>
                                 <div class="ui fluid selection dropdown">
-                                    <input  name="gender" type="hidden" id="type" v-model="blog.typeId">
+                                    <input name="gender" type="hidden" id="typeId" :value="blog.typeId">
                                     <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
+                                    <div class="default text" v-if="blog.type == null || blog.type == undefined">选择分类</div>
+                                    <div class="text" v-text="blog.type.name" v-else></div>
                                     <div class="menu">
-                                        <div class="item" v-for="(type, index) in types" :key="index" :value="type.id" v-text="type.name"></div>
+                                        <div class="item" v-for="(type, index) in types" :key="index" :data-value="type.id" v-text="type.name" @click="changeType(type.id)"></div>
                                     </div>
                                 </div>
                             </div>
@@ -59,30 +49,20 @@
                             <div class="ui left labeled action input">
                                 <label class="ui compact teal basic label">标签</label>
                                 <div class="ui fluid selection multiple search dropdown">
-                                    <input name="gender" type="hidden" id="tags" v-model="tags2">
+                                    <input name="gender" type="hidden" id="tagIds" :value="blog.tagIds" v-if="blog.tagIds != null || blog.tagIds != undefined">
+                                    <input name="gender" type="hidden" id="tagIds" v-else>
                                     <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
+                                    <div v-for="(tag, index) in blog.tags" :key="index" class="ui label" :data-value="tag.id">
+                                        {{tag.name}}
+                                        <i class="delete icon"></i>
+                                    </div>
+                                    <div class="default text">选择标签</div>
                                     <div class="menu">
-                                        <div class="item" v-for="(tag, index) in tags" :key="index" v-text="tag.name" :data-value="tag.name"></div>
+                                        <div class="item" v-for="(tag, index) in tags" :key="index" v-text="tag.name" :data-value="tag.id" @click="changeTag(tag.id)"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- <div class="ui multiple selection dropdown">
-                            <input name="gender" type="hidden" v-model="tags2">
-                            <i class="dropdown icon"></i>
-                            <a class="ui label" data-value="JAVA">
-                                JAVA
-                                <i class="delete icon"></i>
-                            </a>
-                            <div class="default text">默认</div>
-                            <div class="menu">
-                                <div class="item" data-value="0">值</div>
-                                <div class="item" data-value="1">另一个值</div>
-                                <div class="item" data-value="default">默认值</div>
-                                <div class="item" v-for="(tag, index) in tags" :key="index" v-text="tag.name" :data-value="tag.name"></div>
-                            </div>
-                        </div> -->
                     </div>
             
                     <div class="field">
@@ -117,20 +97,19 @@
                         </div>
                         <div class="field">
                         <div class="ui checkbox">
-                            <input type="checkbox" id="commenabled" name="commenabled" class="hidden" v-model="blog.commenabled">
-                            <label for="commenabled">评论</label>
+                            <input type="checkbox" id="commentabled" name="commentabled" class="hidden" v-model="blog.commentabled">
+                            <label for="commentabled">评论</label>
                         </div>
                         </div>
                     </div>
-            
-                    <div class="ui error message"></div>
-            
-                    <div class="ui right aligned container">
-                        <button type="button" class="ui button" onclick="window.history.go(-1)" >返回</button>
-                        <button class="ui secondary button" type="button" id="save-btn">保存</button>
-                        <button class="ui teal button" type="button" id="publish-btn" @click="show">发布</button>
-                    </div>
+
+                    <div class="ui mini negative message" :class="{hidden : hiddens}" v-text="errorMessage">错误提示</div>
                 </form>
+                <div class="ui right aligned container">
+                    <button type="button" class="ui button" onclick="window.history.go(-1)" >返回</button>
+                    <button class="ui secondary button" type="button" @click="publish(false)">保存</button>
+                    <button class="ui teal button" type="button" @click="publish(true)">发布</button>
+                </div>
             </div>
         </div>
 
@@ -138,7 +117,7 @@
     </div>
 </template>
 <script>
-import {addBlog, updateBlog} from '../../api/blog';
+import {addBlog, updateBlog, queryById} from '../../api/blog';
 import {queryTypeList} from '../../api/type';
 import {queryTagList} from '../../api/tag';
 
@@ -155,20 +134,21 @@ export default {
                 views          : undefined,
                 appreciation   : false,
                 shareStatement : false,
-                commenabled    : false,
+                commentabled   : false,
                 published      : false,
                 recommend      : false,
                 createTime     : undefined,
                 updateTime     : undefined,
                 tagIds         : undefined,
+                tags           : null,
                 description    : undefined,
-                typeId         : undefined
+                typeId         : undefined,
+                type           : undefined
             },
-            types : {},
-            tags  : {},
-            type  : '',
-            tags2 : '',
-            leetcode : 'java'
+            types        : {},
+            tags         : {},
+            hiddens      : true,
+            errorMessage : undefined
         }
     },
     mounted() {
@@ -176,56 +156,31 @@ export default {
     },
     methods: {
         init : function() {
-            $('.ui.form').form({
-                fields : {
-                    title : {
-                    identifier: 'title',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '标题：请输入博客标题'
-                    }]
-                    },
-                    content : {
-                    identifier: 'content',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '标题：请输入博客内容'
-                    }]
-                    },
-                    typeId : {
-                    identifier: 'type.id',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '标题：请输入博客分类'
-                    }]
-                    },
-                    firstPicture : {
-                    identifier: 'firstPicture',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '标题：请输入博客首图'
-                    }]
-                    },
-                    description : {
-                    identifier: 'description',
-                    rules: [{
-                        type : 'empty',
-                        prompt: '标题：请输入博客描述'
-                    }]
-                    }
-                }
-            });
-
             $('.ui.dropdown').dropdown();
+
             this.queryTypeList();
             this.queryTagList();
+            let blogId = this.$route.query.blogId;
+            if(blogId != null && blogId != undefined) {
+                this.queryBlogById(blogId);
+            } else {
+                this.blog.content = '请输入文本';
+            }
+        },
+
+        /** 根据id查询博客信息 */
+        queryBlogById : function(id) {
+            let ref = this;
+            queryById(id).then(response => {
+                console.log(response);
+                ref.blog = response.data;
+            })
         },
         
         /** 查找分类列表 */
         queryTypeList : function() {
             let ref = this;
             queryTypeList(1, 999).then(response => {
-                console.log(response);
                 ref.types = response.data.list;
             })
         },
@@ -234,18 +189,68 @@ export default {
         queryTagList : function() {
             let ref = this;
             queryTagList(1, 999).then(response => {
-                console.log(response);
                 ref.tags = response.data.list;
             })
         },
 
-        show : function() {
-            this.blog.flag = $('#flag')[0].textContent;
-            this.blog.content = this.$refs.markDownEditor.getContent();
-            console.log(this.blog);
-            console.log($('#type').val());
-            console.log($('#tags').val());
-            console.log(this.tags2);
+        /** 选择博客类型 */
+        changeType : function(typeId){
+            this.blog.typeId = typeId;
+
+        },
+
+        /** 选择博客标签类型 */
+        changeTag : function(tagId) {
+        },
+
+        /** 发布文章和保存文章 */
+        publish : function(state) {
+            this.blog.flag      = $('#flag')[0].textContent;
+            this.blog.content   = this.$refs.markDownEditor.getContent();
+            this.blog.tagIds    = $('#tagIds').val();
+            this.blog.published = state;
+
+            if(!this.checkFrom()) {
+                this.hiddens = false;
+                return;
+            }
+
+            if(this.blog.id == null || this.blog.id == undefined) {
+                addBlog(this.blog).then(response => {
+                    if(response.code == 200) {
+                        window.history.go(-1);
+                    }
+                });
+            } else {
+                updateBlog(this.blog).then(response => {
+                    if(response.code == 200) {
+                        window.history.go(-1);
+                    }
+                });
+            }
+        },
+
+        /** 检查表单 */
+        checkFrom : function() {
+            if(this.blog.title == null || this.blog.title == undefined) {
+                this.errorMessage = '博客主题不能为空';
+
+                return false;
+            } else if(this.blog.typeId == null || this.blog.typeId == undefined) {
+                this.errorMessage = '博客分类不能为空';
+
+                return false;
+            } else if(this.blog.tagIds == null || this.blog.tagIds == undefined || this.blog.tagIds == '') {
+                this.errorMessage = '博客标签不能为空';
+
+                return false;
+            } else if(this.blog.description == null || this.blog.description == undefined) {
+                this.errorMessage = '博客描述不能为空';
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

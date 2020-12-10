@@ -2,7 +2,7 @@ import {axiosIns} from '../utils/request'
 
 export function queryById(id) {
     return axiosIns({
-        url    : '/blogs/' + id,
+        url    : '/blog/' + id,
         method : 'get'
     })
 }
@@ -54,7 +54,7 @@ export function updateBlog(blog) {
 
 export function deleteBlogById(id) {
     return axiosIns({
-        url    : '/admin/blogs/delete/' + id,
+        url    : '/admin/blog/delete/' + id,
         method : 'delete'
     })
 }

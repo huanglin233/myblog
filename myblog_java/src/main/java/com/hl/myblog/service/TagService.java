@@ -69,6 +69,13 @@ public interface TagService {
     List<Tag> getTagTop(int size);
 
     /**
+     * 通过博客id获取标签列表
+     * @param  blogId 博客id
+     * @return
+     */
+    List<Tag> getTagsByBlogId(Long blogId);
+
+    /**
      * 更新标签信息
      * 
      * @param  tag 更新的内容

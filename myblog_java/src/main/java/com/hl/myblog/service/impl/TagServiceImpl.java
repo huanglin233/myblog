@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import com.hl.myblog.annotation.RecordLog;
 import com.hl.myblog.common.enums.RecordObject;
 import com.hl.myblog.common.enums.RecordType;
+import com.hl.myblog.dao.BlogMapper;
 import com.hl.myblog.dao.TagMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
 import com.hl.myblog.po.Tag;
@@ -27,13 +28,16 @@ public class TagServiceImpl implements TagService{
     @Autowired
     private TagMapper tagMapper;
 
+    @Autowired
+    private BlogMapper blogMapper;
+
     @RecordLog(detail = "添加博客标签", recordType = RecordType.INSERT, recordObject = RecordObject.TAG)
     @Override
     public int saveTag(Tag tag) {
         return tagMapper.add(tag.getName());
     }
 
-    @RecordLog(detail = "通过标签id=[[${id}]]获取博客标签信息", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "通过标签id=[{{id}}]获取博客标签信息", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
     @Override
     public Tag getTag(long id) {
         Tag tag = tagMapper.queryById(id);
@@ -41,7 +45,7 @@ public class TagServiceImpl implements TagService{
         return tag;
     }
 
-    @RecordLog(detail = "通过标签name=[[${name}]]获取博客标签信息", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "通过标签name=[{{name}}]获取博客标签信息", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
     @Override
     public Tag getTagByName(String name) {
         Tag tag = tagMapper.queryByName(name);
@@ -49,7 +53,7 @@ public class TagServiceImpl implements TagService{
         return tag;
     }
 
-    @RecordLog(detail = "通过分页查询博客标签列表pageNum=[[${pageNum}]], pageSize=[[${pageSize}]]", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "通过分页查询博客标签列表pageNum=[{{pageNum}}], pageSize=[{{pageSize}}]", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
     @Override
     public PageInfo<Tag> getTagList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
@@ -58,7 +62,7 @@ public class TagServiceImpl implements TagService{
         return pageInfo;
     }
 
-    @RecordLog(detail = "通过标签ids=[[${ides}]]查询博客标签列表", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "通过标签ids=[{{ids}}]查询博客标签列表", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
     @Override
     public List<Tag> getTagList(String ids) {
         List<Long> tagIds = new ArrayList<Long>();
@@ -81,7 +85,7 @@ public class TagServiceImpl implements TagService{
         return tags;
     }
 
-    @RecordLog(detail = "查询前[[${size}]]的标签列表", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "查询前[{{size}}]的标签列表", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
     @Override
     public List<Tag> getTagTop(int size) {
         PageHelper.startPage(1, size).setOrderBy("id desc");
@@ -103,11 +107,19 @@ public class TagServiceImpl implements TagService{
         }
     }
 
-    @RecordLog(detail = "通过博客标签id=[[{id}]]删除标签", recordType = RecordType.DELETE, recordObject = RecordObject.TAG)
+    @RecordLog(detail = "通过博客标签id=[{{id}}]删除标签", recordType = RecordType.DELETE, recordObject = RecordObject.TAG)
     @Override
     public int deleteTag(Long id) {
         int deleteTag = tagMapper.delete(id);
-
+        deleteTag = blogMapper.deleteBlogWithTag(id);
         return deleteTag;
+    }
+
+    @RecordLog(detail = "通过博客id=[{{blogId}}]", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)
+    @Override
+    public List<Tag> getTagsByBlogId(Long blogId) {
+        List<Tag> tags = tagMapper.queryByBlogId(blogId);
+
+        return tags;
     }
 }

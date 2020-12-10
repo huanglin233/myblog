@@ -46,6 +46,13 @@ public interface TagMapper {
     public List<Tag> queryByIds(@Param("ids") List<Long> ids);
 
     /**
+     * 根据博客id查询标签列表
+     * @param  blogId 博客id
+     * @return
+     */
+    public List<Tag> queryByBlogId(@Param("blogId") Long blogId);
+
+    /**
      * 添加新的标签
      * 
      * @param  name 标签名称

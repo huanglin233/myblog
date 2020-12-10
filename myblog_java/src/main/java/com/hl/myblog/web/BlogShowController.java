@@ -76,6 +76,11 @@ public class BlogShowController {
     @GetMapping("/blog/{id}")
     public ResponseResult getBlog(@PathVariable("id") Long id) {
         Blog blog = blogServiceImpl.getBlog(id);
+        if(blog != null) {
+            // 博客浏览次数+1
+            blog.setViews(blog.getViews() + 1);
+            blogServiceImpl.updateBlog(blog);
+        }
 
         return ResponseResult.success(blog);
     }

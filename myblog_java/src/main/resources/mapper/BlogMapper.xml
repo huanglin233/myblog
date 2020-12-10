@@ -18,13 +18,11 @@
         <result column="description" property="description"/>
         <result column="typeId" property="typeId"/>
         <result column="userId" property="userId"/>
-        <collection property="type" ofType="com.hl.myblog.po.Type">
-            <id column="tid" property="id"/>
-            <result column="tname" property="name"/>
+        <collection property="type" ofType="com.hl.myblog.po.Type" column="typeId"
+            select="com.hl.myblog.dao.TypeMapper.queryById">
         </collection>
-        <collection property="tags" ofType="com.hl.myblog.po.Tag">
-            <id column="taid" property="id"/>
-            <result column="taname" property="name"/>
+        <collection property="tags" ofType="com.hl.myblog.po.Tag" column="bid" 
+            select="com.hl.myblog.dao.TagMapper.queryByBlogId">
         </collection>
         <collection property="user" ofType="com.hl.myblog.po.User">
             <id column="uid" property="id"/>
@@ -38,6 +36,7 @@
 
     <sql id="baseSQL">
         select
+            distinct
             blog.id as bid,
             blog.title as title,
             blog.content as content,
@@ -54,10 +53,6 @@
             blog.description as description,
             blog.type_id as typeId,
             blog.user_id as userId,
-            type.id as tid,
-            type.name as tname,
-            tag.id as taid,
-            tag.name as taname,
             user.id as uid,
             user.nickname as nickname,
             user.user_name as username,
@@ -66,18 +61,10 @@
             user.type as type
         from
             t_blog as blog,
-            t_type as type,
-            t_tag  as tag,
             t_user as user,
-            t_blog_tags as bt
+            t_type as type
     </sql>
     <sql id="whereSQL">
-        and
-            blog.type_id = type.id
-        and
-            blog.id = bt.blogs_id
-        and
-            bt.tags_id = tag.id
         and
             blog.user_id = user.id
     </sql>
@@ -93,6 +80,8 @@
         <if test="typeId != null">
             and
                 type.id = #{typeId}
+            and
+                type.id = blog.type_id
         </if>
         <if test="tagId != null">
             and
@@ -150,11 +139,6 @@
                 #{title}, #{updateTime}, #{views}, #{type.id}, #{user.id}
                 )
     </insert>
-    <insert id="addBlogWithTag">
-        insert into
-            t_blog_tags(blogs_id, tags_id)
-            values(#{blogId}, #{tagId})
-    </insert>
     <update id="update">
         update 
             t_blog
@@ -190,11 +174,24 @@
             t_blog
         where
             id = #{id}
-    </delete>
+    </delete>    
+    <insert id="addBlogWithTag">
+        insert into
+            t_blog_tags(blogs_id, tags_id)
+            values(#{blogId}, #{tagId})
+    </insert>
+    <update id="updateBlogWithTag">
+        update 
+            t_blog_tags
+        set
+            tags_id = #{tagId}
+        where
+            blogs_id = #{blogId}
+    </update>
     <delete id="deleteBlogWithTag">
         delete from
             t_blog_tags
         where
-            blogs_id = #{blogId}
+            tags_id = #{tagId}
     </delete>
 </mapper>

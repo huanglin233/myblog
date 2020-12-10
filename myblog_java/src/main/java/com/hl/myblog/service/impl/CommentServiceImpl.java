@@ -26,7 +26,7 @@ public class CommentServiceImpl implements CommentService{
     @Autowired
     private CommentMapper commentMapper;
 
-    @RecordLog(detail = "通过博客Id=[[${blogId}]]", recordType = RecordType.SELECT, recordObject = RecordObject.COMMENT)
+    @RecordLog(detail = "通过博客Id=[{{blogId}}]", recordType = RecordType.SELECT, recordObject = RecordObject.COMMENT)
     @Override
     public List<Comment> getListComment(Long blogId) {
         List<Comment> comments = commentMapper.queryByBlogId(blogId);

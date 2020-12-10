@@ -14,27 +14,25 @@
         <!--中间内容-->
         <div class="m-container-small m-padded-tb-big">
             <div class="ui contrainer">
-                <form class="ui form" th:object="${tag}" method="post" action="#" th:action="*{id} eq null ? @{/admin/tags/add} : @{'/admin/tags/edit/' + *{id}}">
-                    <input type="hidden" name="id" th:value="*{id}">
+                <form class="ui form">
                     <div class="field">
                         <div class="ui left labeled input">
                             <label class="ui teal basic label">名称</label>
-                            <input type="text" name="name" placeholder="标签名称" th:value="*{name}">
+                            <input type="text" name="name" placeholder="标签名称" v-model="tag.name">
                         </div>
                     </div>
 
-                    <div class="ui error message"></div>
-                    <div class="ui negative message" th:if="${#fields.hasErrors('name')}">
+                    <div class="ui negative message" v-if="errorMsg">
                         <i class="close icon" @click="closeBox"></i>
                         <div class="header">验证失败</div>
-                        <p th:errors="*{name}">提交信息不符合规则</p>
+                        <p v-text="errorMsgDesc">提交信息不符合规则</p>
                     </div>
                     
-                    <div class="ui right aligend container">
-                        <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
-                        <button class="ui teal submit button">提交</button>
-                    </div>
                 </form>
+                <div class="ui right aligend container">
+                    <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal submit button" @click="submit">提交</button>
+                </div>
             </div>
         </div>
 
@@ -42,11 +40,18 @@
     </div>
 </template>
 <script>
+import {queryTagById, addTag, updateTag} from '../../api/tag'
+
 export default {
     name : 'editTag',
     data() {
         return {
-
+            errorMsg     : false,
+            errorMsgDesc : '提交信息不符合规则',
+            tag          : {
+                id   : undefined,
+                name : undefined
+            }
         }
     },
     mounted() {
@@ -57,6 +62,7 @@ export default {
             $(".ui.dropdown").dropdown({
                 on : "hover"
             });
+
             $(".ui.form").form({
                 fields : {
                     title : {
@@ -68,10 +74,65 @@ export default {
                     }
                 }
             });
+
+            let tagId = this.$route.query.tagId;
+            if(tagId != null && tagId != undefined) {
+                this.queryTagById(tagId);
+            }
         },
+
         closeBox : function(e) {
             var messageBox = e.target;
             $(messageBox).closest(".message").transition('fade');
+        },
+
+        queryTagById : function(id) {
+            let ref = this;
+            queryTagById(id).then(response => {
+                ref.tag = response.data;
+            })
+        },
+
+        addTag : function() {
+            let ref = this;
+            addTag(this.tag).then(response => {
+                if(response.code != 200) {
+                    ref.errorMsg     = true;
+                    ref.errorMsgDesc = response.msg;
+                } else {
+                    window.history.go(-1);
+                }
+            })
+        },
+
+        updateTag : function() {
+            let ref = this;
+            updateTag(this.tag).then(response => {
+                console.log(response);
+                if(response.code != 200) {
+                    ref.errorMsg     = true;
+                    ref.errorMsgDesc = response.msg;
+                } else {
+                    window.history.go(-1);
+                }
+            })
+        },
+
+        submit : function() {
+            if(this.tag.name == null || this.tag.name == undefined) {
+                this.errorMsg     = true;
+                this.errorMsgDesc = '标签名称不能为空';
+
+                return;
+            }
+
+            if(this.tag.id != null && this.tag.id != undefined) {
+                console.log("update");
+                this.updateTag();
+            } else {
+                console.log("add");
+                this.addTag();
+            }
         }
     }
 }

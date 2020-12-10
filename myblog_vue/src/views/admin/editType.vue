@@ -14,27 +14,25 @@
         <!--中间内容-->
         <div class="m-container-small m-padded-tb-big">
             <div class="ui contrainer">
-                <form class="ui form" th:object="${type}" method="post" action="#" th:action="*{id} eq null ? @{/admin/types/add} : @{'/admin/types/edit/' + *{id}}">
-                    <input type="hidden" name="id" th:value="*{id}">
+                <form class="ui form">
                     <div class="field">
                         <div class="ui left labeled input">
                             <label class="ui teal basic label">名称</label>
-                            <input type="text" name="name" placeholder="分类名称" th:value="*{name}">
+                            <input type="text" name="name" placeholder="分类名称" v-model="type.name">
                         </div>
                     </div>
 
-                    <div class="ui error message"></div>
-                    <div class="ui negative message" th:if="${#fields.hasErrors('name')}">
+                    <div class="ui negative message" v-if="errorMsg">
                         <i class="close icon" @click="close"></i>
-                        <div class="header">验证失败</div>
-                        <p th:errors="*{name}">提交信息不符合规则</p>
+                        <div class="header">消息提醒</div>
+                        <p v-text="errorMsgDesc">提交信息不符合规则</p>
                     </div>
                     
-                    <div class="ui right aligend container">
-                        <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
-                        <button class="ui teal submit button">提交</button>
-                    </div>
                 </form>
+                <div class="ui right aligend container m-padded-tb">
+                    <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal button" @click="submit">提交</button>
+                </div>
             </div>
         </div>
 
@@ -42,11 +40,18 @@
     </div>
 </template>
 <script>
+import {queryTypeById, addType, updateType} from '../../api/type'
+
 export default {
     name : 'editType',
     data() {
         return {
-
+            errorMsg     : false,
+            errorMsgDesc : '提交信息不符合规则',
+            type         : {
+                id   : undefined,
+                name : undefined
+            }
         }
     },
     mounted() {
@@ -69,10 +74,54 @@ export default {
                     }
                 }
             });
+
+            let typeId = this.$route.query.typeId;
+            if(typeId != null && typeId != undefined) {
+                this.queryTypeById(typeId);
+            }
         },
+
         close : function(e) {
             let messageBox = e.target;
             $(messageBox).closest(".message").transition("fade");
+        },
+
+        /** 根据分类id查询分类信息 */
+        queryTypeById :function(id) {
+            let ref = this;
+            queryTypeById(id).then(response => {
+                this.type = response.data;
+            })
+        },
+
+        submit : function() {
+            let ref = this;
+            if(this.type.name == null && this.type.name == undefined) {
+                this.errorMsg     = true;
+                this.errorMsgDesc = '分类名称不能为空'
+
+                return;
+            }
+
+            if(this.type.id != null && this.type.id != undefined) {
+                updateType(this.type).then(response => {
+                    if(response.code == 200) {
+                        window.history.go(-1);
+                    } else {
+                        ref.errorMsg     = true;
+                        ref.errorMsgDesc = response.msg;
+                    }
+                })
+            } else {
+                addType(this.type).then(response => {
+                    if(response.code == 200) {
+                        window.history.go(-1);
+                    } else {
+                        ref.errorMsg     = true;
+                        ref.errorMsgDesc = response.msg;
+                    }
+                });
+            }
         }
     }
 }

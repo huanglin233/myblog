@@ -13,3 +13,26 @@ export function queryTypeList(pageNum, pageSize) {
         method : 'get'
     })
 }
+
+export function addType(type) {
+    return axiosIns({
+        url    : '/admin/type/add',
+        method : 'post',
+        data   : type
+    })
+}
+
+export function updateType(type) {
+    return axiosIns({
+        url    : '/admin/type/update',
+        method : 'put',
+        data   : type
+    })
+}
+
+export function deleteTypeById(id) {
+    return axiosIns({
+        url    : '/admin/type/delete/' + id,
+        method : 'delete'
+    })
+}

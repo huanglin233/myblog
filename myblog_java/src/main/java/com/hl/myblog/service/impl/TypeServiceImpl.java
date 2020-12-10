@@ -34,7 +34,7 @@ public class TypeServiceImpl implements TypeService{
         return addResult;
     }
 
-    @RecordLog(detail = "通过分类id=[[${id}]]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "通过分类id=[{{id}}]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getType(Long id) {
         Type queryById = typeMapper.queryById(id);
@@ -42,7 +42,7 @@ public class TypeServiceImpl implements TypeService{
         return queryById;
     }
 
-    @RecordLog(detail = "通过分类name=[[${name}]]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "通过分类name=[{{name}}]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getTypeByName(String name) {
         Type queryByName = typeMapper.queryByName(name);
@@ -50,7 +50,7 @@ public class TypeServiceImpl implements TypeService{
         return queryByName;
     }
 
-    @RecordLog(detail = "通过分页查询博客分类列表pageNum=[[${pageNum}]], pageSize=[[${pageSize}]]", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "通过分页查询博客分类列表pageNum=[{{pageNum}}], pageSize=[{{pageSize}}]", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public PageInfo<Type> getTypeList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
@@ -67,7 +67,7 @@ public class TypeServiceImpl implements TypeService{
         return queryAll;
     }
 
-    @RecordLog(detail = "查询博分类前[[${size}]]的分类列表", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "查询博分类前[{{size}}]的分类列表", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public List<Type> getTypeTop(int size) {
         PageHelper.startPage(1, size).setOrderBy("id desc");
@@ -89,7 +89,7 @@ public class TypeServiceImpl implements TypeService{
         }
     }
 
-    @RecordLog(detail = "更具博客分类id=[[${id}]]删除分类信息", recordType = RecordType.DELETE, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "更具博客分类id=[{{id}}]删除分类信息", recordType = RecordType.DELETE, recordObject = RecordObject.TYPE)
     @Override
     public int deleteType(Long id) {
         int delete = typeMapper.delete(id);

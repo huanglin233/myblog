@@ -63,7 +63,7 @@
                             <tr v-for="(item, index) in blogs.list" :key="index">
                                 <td v-text="index + 1"></td>
                                 <td v-text="item.title"></td>
-                                <td v-text="item.type.name">认知升级</td>
+                                <td v-text="item.type != null ? item.type.name : '无分类'" >认知升级</td>
                                 <td v-text="item.recommend == true ? '是' : '否`'">是</td>
                                 <td v-text="item.published == true ? '发布' : '草稿'">草稿</td>
                                 <td v-text="item.updateTime"></td>
@@ -76,9 +76,9 @@
                         <tfoot>
                             <tr>
                                 <th colspan="7">
-                                    <div class="ui mini pagination secondary menu" th:if="${page.pages} > 1">
-                                        <a @click="queryBlogs(blogs.pageNum -1, 1)" v-if="blogs.pageNum > 1" class="ui mini floated teal basic button item">上一页</a>
-                                        <a @click="queryBlogs(blogs.pageNum +1, 1)" v-if="blogs.pageNum < blogs.pages" class="ui mini floated teal basic button item">下一页</a>
+                                    <div class="ui mini pagination secondary menu">
+                                        <a @click="queryByBlogQuery(blogs.pageNum -1, 5)" v-if="blogs.hasPreviousPage" class="ui mini floated teal basic button item">上一页</a>
+                                        <a @click="queryByBlogQuery(blogs.pageNum +1, 5)" v-if="blogs.hasNextPage" class="ui mini floated teal basic button item">下一页</a>
                                     </div>
                                     <router-link to="/admin/editBlog" class="ui mini right floated teal basic button">新增</router-link>
                                 </th>
@@ -116,10 +116,6 @@ export default {
          * 初始化页面博客列表
          */
         init : function() {
-            $('.ui.dropdown').dropdown({
-                on: 'hover'
-            });
-
             this.queryByBlogQuery(1, 5);
         },
 
@@ -142,7 +138,6 @@ export default {
         queryByBlogQuery : function(pageNum, pageSize) {
             let ref = this;
             queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
-                console.log(response)
                 ref.blogs = response.data.blogs;
                 ref.types = response.data.types;
             }).catch(error => {
@@ -154,15 +149,16 @@ export default {
             $('.ui.type.dropdown').dropdown('clear');
         },
 
+        /** 搜索博客列表 */
         search : function() {
             this.queryByBlogQuery(1, 5);
         },
 
+        /** 根据博客id删除博客 */
         deleteBlog : function(id) {
             let ref = this;
 
             deleteBlogById(id).then(response => {
-                console.log(response);
                 ref.queryByBlogQuery(1, 5)
             }).catch(error => {
                 console.log(error);

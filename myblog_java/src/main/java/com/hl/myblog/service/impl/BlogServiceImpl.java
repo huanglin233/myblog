@@ -1,5 +1,7 @@
 package com.hl.myblog.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import com.hl.myblog.common.utils.MarkdownUtils;
 import com.hl.myblog.dao.BlogMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
 import com.hl.myblog.po.Blog;
+import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.BlogService;
 
 /**
@@ -30,10 +33,14 @@ public class BlogServiceImpl implements BlogService{
     @Autowired
     BlogMapper blogMapper;
 
+    @Autowired
+    TagServiceImpl TagServiceImpl;
+
     @RecordLog(detail = "通过id = [{{id}}]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public Blog getBlog(Long id) {
         Blog queryById = blogMapper.queryById(id);
+        queryBlogTagIds(queryById);
 
         return queryById;
     }
@@ -48,6 +55,7 @@ public class BlogServiceImpl implements BlogService{
         }
         queryById.setContent(MarkdownUtils.markdownToHtmlExtensions(queryById.getContent()));
         blogMapper.updateViews(id);
+        queryBlogTagIds(queryById);
 
         return queryById;
     }
@@ -57,6 +65,9 @@ public class BlogServiceImpl implements BlogService{
     public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recommend) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recommend));
+        for(Blog blog : pageInfo.getList()) {
+            queryBlogTagIds(blog);
+        }
 
         return pageInfo;
     }
@@ -66,6 +77,9 @@ public class BlogServiceImpl implements BlogService{
     public PageInfo<Blog> getBlogList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null));
+        for(Blog blog : pageInfo.getList()) {
+            queryBlogTagIds(blog);
+        }
 
         return pageInfo;
     }
@@ -75,6 +89,9 @@ public class BlogServiceImpl implements BlogService{
     public PageInfo<Blog> getBlogList(Long tagId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, tagId, null));
+        for(Blog blog : pageInfo.getList()) {
+            queryBlogTagIds(blog);
+        }
 
         return pageInfo;
     }
@@ -82,18 +99,23 @@ public class BlogServiceImpl implements BlogService{
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public PageInfo<Blog> getBlogList(String query, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("update_time desc");
+        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.searchByTitle(query));
+        for(Blog blog : pageInfo.getList()) {
+            queryBlogTagIds(blog);
+        }
 
         return pageInfo;
     }
 
-    @RecordLog(detail = "获取前[{size}]的博客列表", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
+    @RecordLog(detail = "获取前[{{size}}]的博客列表", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public List<Blog> ListRecommendBlogTop(Integer size) {
-        PageHelper.startPage(0, size).setOrderBy("update_time desc");
+        PageHelper.startPage(0, size).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null));
-
+        for(Blog blog : pageInfo.getList()) {
+            queryBlogTagIds(blog);
+        }
         return pageInfo.getList();
     }
 
@@ -129,10 +151,45 @@ public class BlogServiceImpl implements BlogService{
         return result;
     }
 
-    @RecordLog(detail = "更新博客归档信息", recordType = RecordType.UPDATE, recordObject = RecordObject.BLOG)
+    @RecordLog(detail = "更新博客信息", recordType = RecordType.UPDATE, recordObject = RecordObject.BLOG)
     @Override
     public int updateBlog(Blog blog) {
-        return blogMapper.update(blog);
+        Blog       queryById  = blogMapper.queryById(blog.getId());
+        int        update     = blogMapper.update(blog);
+        List<Long> addTags    = new ArrayList<Long>();
+        List<Long> deleteTags = new ArrayList<Long>();
+        List<Long> existTags  = new ArrayList<Long>();
+        for(Tag tag : queryById.getTags()) {
+            existTags.add(tag.getId());
+        }
+        if(update == 1) {
+            String[] split = blog.getTagIds().split(",");
+            for(String tagId : split) {
+                if(existTags == null || existTags.size() < 1) {
+                    addTags.add(Long.parseLong(tagId));
+                }
+
+                if(!existTags.contains(Long.parseLong(tagId)) && !addTags.contains(Long.parseLong(tagId))) {
+                    addTags.add(Long.parseLong(tagId));
+                }
+            }
+
+            for(Tag tag :queryById.getTags()) {
+                if(!Arrays.asList(split).contains(String.valueOf(tag.getId()))) {
+                    deleteTags.add(tag.getId());
+                }
+            }
+
+            for(Long tagId : addTags) {
+                blogMapper.addBlogWithTag(blog.getId(), tagId);
+            }
+
+            for(Long tagId : deleteTags) {
+                blogMapper.deleteBlogWithTag(tagId);
+            }
+        }
+
+        return update;
     }
 
     @RecordLog(detail = "删除博客归档信息", recordType = RecordType.DELETE, recordObject = RecordObject.BLOG)
@@ -141,5 +198,17 @@ public class BlogServiceImpl implements BlogService{
         blogMapper.deleteBlogWithTag(id);
 
         return blogMapper.delete(id);
+    }
+
+    private void queryBlogTagIds(Blog blog){
+       StringBuilder tagIds = new StringBuilder();
+       for(Tag tag : blog.getTags()) {
+           if(tagIds.length() < 1) {
+               tagIds.append(tag.getId());
+           } else {
+               tagIds.append("," + tag.getId());
+           }
+       }
+       blog.setTagIds(tagIds.toString());
     }
 }

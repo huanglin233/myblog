@@ -29,9 +29,20 @@
         from 
             t_tag
         where
-            <foreach item="id" index="index" collection="ids" separator="and" >
+            <foreach item="id" index="index" collection="ids" separator="or" >
                 id = #{id}
             </foreach>
+    </select>
+    <select id="queryByBlogId" resultType="com.hl.myblog.po.Tag">
+        select 
+            tag.id as id,
+            tag.name as name
+        from
+            t_tag as tag, t_blog_tags as tbt
+        where
+            tbt.blogs_id = #{blogId}
+        and
+            tbt.tags_id = tag.id
     </select>
     <insert id="add">
         insert into 

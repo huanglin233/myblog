@@ -73,20 +73,27 @@ public interface BlogMapper {
     /**
      * 添加博客与标签的关联记录
      * 
-     * @param  blogId
-     * @param  tagId
+     * @param  blogId 博客id
+     * @param  tagId  标签id
      * @return
      */
     public int addBlogWithTag(@Param("blogId") long blogId, @Param("tagId") long tagId);
 
     /**
+     * 更新博客与标签的关联记录
+     * @param  blogId 博客id
+     * @param  tagId  标签id
+     * @return
+     */
+    public int updateBlogWithTag(@Param("blogId") long blogId, @Param("tagId") long tagId);
+
+    /**
      * 删除博客和标签的关联记录
      * 
-     * @param  blogId 博客ID
      * @param  tagId  标签ID
      * @return
      */
-    public int deleteBlogWithTag(@Param("blogId") long blogId);
+    public int deleteBlogWithTag(@Param("tagId") long tagId);
     /**
      * 更新博客的浏览量
      * 
