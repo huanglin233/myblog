@@ -12,14 +12,16 @@ public class BlogQuery {
     public Long    typeId;
     public Long    tagId;
     public Boolean recommend;
+    public Boolean published;
 
     public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append(prefix + "title     = " + title  + "\n");
-        sb.append(prefix + "typeId    = " + typeId + "\n");
-        sb.append(prefix + "tagId     = " + tagId  + "\n");
+        sb.append(prefix + "title     = " + title      + "\n");
+        sb.append(prefix + "typeId    = " + typeId     + "\n");
+        sb.append(prefix + "tagId     = " + tagId      + "\n");
         sb.append(prefix + "recommend = " + recommend  + "\n");
+        sb.append(prefix + "published = " + published  + "\n");
 
         return sb.toString();
     }

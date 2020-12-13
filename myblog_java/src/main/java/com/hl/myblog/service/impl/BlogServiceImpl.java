@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -32,7 +31,6 @@ public class BlogServiceImpl implements BlogService{
 
     @Autowired
     BlogMapper blogMapper;
-
     @Autowired
     TagServiceImpl TagServiceImpl;
 
@@ -46,7 +44,6 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @RecordLog(detail = "通过id = [{{id}}]查询博客信息,并把博客信息转为html格式", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
-    @Transactional
     @Override
     public Blog getAndConvert(Long id) {
         Blog queryById = blogMapper.queryById(id);
@@ -62,9 +59,9 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recommend) {
+    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recommend, Boolean published) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recommend));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recommend, published));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -76,7 +73,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public PageInfo<Blog> getBlogList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null, null));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -88,7 +85,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public PageInfo<Blog> getBlogList(Long tagId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, tagId, null));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, tagId, null, null));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -112,7 +109,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public List<Blog> ListRecommendBlogTop(Integer size) {
         PageHelper.startPage(0, size).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, true, true));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -198,6 +195,11 @@ public class BlogServiceImpl implements BlogService{
         blogMapper.deleteBlogWithTag(id);
 
         return blogMapper.delete(id);
+    }
+
+    @Override
+    public int deleteBlogWithTag(Long tagId) {
+        return blogMapper.deleteBlogWithTag(tagId);
     }
 
     private void queryBlogTagIds(Blog blog){

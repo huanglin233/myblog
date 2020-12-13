@@ -12,6 +12,7 @@ import com.hl.myblog.common.enums.RecordObject;
 import com.hl.myblog.common.enums.RecordType;
 import com.hl.myblog.dao.TypeMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
+import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Type;
 import com.hl.myblog.service.TypeService;
 
@@ -25,6 +26,8 @@ public class TypeServiceImpl implements TypeService{
 
     @Autowired
     TypeMapper typeMapper;
+    @Autowired
+    BlogServiceImpl blogServiceImpl;
 
     @RecordLog(detail = "添加博客分类", recordType = RecordType.INSERT, recordObject = RecordObject.TYPE)
     @Override
@@ -34,18 +37,22 @@ public class TypeServiceImpl implements TypeService{
         return addResult;
     }
 
-    @RecordLog(detail = "通过分类id=[{{id}}]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "通过分类id=[{{id}}]查询分类信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getType(Long id) {
         Type queryById = typeMapper.queryById(id);
+        PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryById.getId(), null, null, true);
+        queryById.setBlogs(blogList);
 
         return queryById;
     }
 
-    @RecordLog(detail = "通过分类name=[{{name}}]查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
+    @RecordLog(detail = "通过分类name=[{{name}}]查询分类信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getTypeByName(String name) {
-        Type queryByName = typeMapper.queryByName(name);
+        Type           queryByName = typeMapper.queryByName(name);
+        PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryByName.getId(), null, null, true);
+        queryByName.setBlogs(blogList);
 
         return queryByName;
     }
@@ -55,6 +62,10 @@ public class TypeServiceImpl implements TypeService{
     public PageInfo<Type> getTypeList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
         PageInfo<Type> pageInfo = new PageInfo<Type>(typeMapper.queryAll());
+        for(Type type : pageInfo.getList()) {
+            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, type.getId(), null, null, true);
+            type.setBlogs(blogList);
+        }
 
         return pageInfo;
     }
@@ -63,6 +74,10 @@ public class TypeServiceImpl implements TypeService{
     @Override
     public List<Type> getTypeList() {
         List<Type> queryAll = typeMapper.queryAll();
+        for(Type type : queryAll) {
+            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, type.getId(), null, null, true);
+            type.setBlogs(blogList);
+        }
 
         return queryAll;
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -11,9 +12,9 @@ import com.github.pagehelper.PageInfo;
 import com.hl.myblog.annotation.RecordLog;
 import com.hl.myblog.common.enums.RecordObject;
 import com.hl.myblog.common.enums.RecordType;
-import com.hl.myblog.dao.BlogMapper;
 import com.hl.myblog.dao.TagMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
+import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.TagService;
 
@@ -27,9 +28,9 @@ public class TagServiceImpl implements TagService{
 
     @Autowired
     private TagMapper tagMapper;
-
     @Autowired
-    private BlogMapper blogMapper;
+    @Lazy
+    private BlogServiceImpl blogServiceImpl;
 
     @RecordLog(detail = "添加博客标签", recordType = RecordType.INSERT, recordObject = RecordObject.TAG)
     @Override
@@ -58,6 +59,10 @@ public class TagServiceImpl implements TagService{
     public PageInfo<Tag> getTagList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
         PageInfo<Tag> pageInfo = new PageInfo<Tag>(tagMapper.queryAll());
+        for(Tag tag : pageInfo.getList()) {
+            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 1, null, null, tag.getId(), null, true);
+            tag.setBlogs(blogList);
+        }
 
         return pageInfo;
     }
@@ -111,7 +116,8 @@ public class TagServiceImpl implements TagService{
     @Override
     public int deleteTag(Long id) {
         int deleteTag = tagMapper.delete(id);
-        deleteTag = blogMapper.deleteBlogWithTag(id);
+        deleteTag = blogServiceImpl.deleteBlogWithTag(id);
+
         return deleteTag;
     }
 

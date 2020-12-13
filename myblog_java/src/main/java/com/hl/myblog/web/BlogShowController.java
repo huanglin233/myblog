@@ -62,7 +62,7 @@ public class BlogShowController {
                         @ApiImplicitParam(name = "blogQuery", value = "博客查询条件", paramType = "Path", dataType = "BlogQuery")})
     @PostMapping("/blogs/search/{pageNum}/{pageSize}")
     public ResponseResult search(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody BlogQuery blogQuery) {
-        PageInfo<Blog>      blogs     = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recommend);
+        PageInfo<Blog>      blogs     = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recommend, blogQuery.published);
         List<Type>          types     = typeServiceImpl.getTypeList();
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("types", types);

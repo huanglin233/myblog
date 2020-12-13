@@ -47,7 +47,7 @@
                                                 </div>
                                             </div>
                                             <div class="right aligned five wide column" v-if="item.type != null">
-                                                <a href="#" target="_blank" class="ui teal basic label m-padded-tb-tiny m-text-thin">{{item.type.name}}</a>
+                                                <router-link :to="'/type?typeId=' + item.type.id" target="_blank" class="ui teal basic label m-padded-tb-tiny m-text-thin">{{item.type.name}}</router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -62,11 +62,11 @@
                         <!--分页footer-->
                         <div class="ui bottom attached segment">
                             <div class="ui middle aligned two column grid">
-                                <div class="column">
-                                    <a href="#"  class="ui mini teal basic button">上一页</a>
+                                <div class="column" v-if="blogs.hasPreviousPage">
+                                    <a class="ui mini teal basic button" @click="queryList(blogs.pageNum - 1,5)">上一页</a>
                                 </div>
-                                <div class="right aligned column">
-                                    <a href="#"  class="ui mini teal basic button">下一页</a>
+                                <div class="right aligned column" v-if="blogs.hasNextPage">
+                                    <a class="ui mini teal basic button" @click="queryList(blogs.pageNum + 1, 5)">下一页</a>
                                 </div>
                             </div>
                         </div>
@@ -81,16 +81,16 @@
                                         <i class="idea icon"></i>分类
                                     </div>
                                     <div class="right aligned column">
-                                        <a href="#"  target="_blank">more<i class="angle double right icon"></i></a>
+                                        <router-link to="/type"  target="_blank">more<i class="angle double right icon"></i></router-link>
                                     </div>
                                 </div>
                             </div>
                             <div class="ui teal segment">
-                                <div class="ui fluid vertical menu">
-                                    <a href="#"  target="_blank" class="item" >
-                                        <span ></span>
-                                        <div class="ui teal basic left pointing label" >13</div>
-                                    </a>
+                                <div class="ui fluid vertical menu" v-for="(item, index) in types.list" :key="index">
+                                    <router-link :to="'/type?typeId=' + item.id"  target="_blank" class="item"  >
+                                        <span>{{item.name}}</span>
+                                        <div class="ui teal basic left pointing label">{{item.blogs != null ? item.blogs.total : 0}}</div>
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -102,15 +102,15 @@
                                         <i class="tags icon"></i>标签
                                     </div>
                                     <div class="right aligned column">
-                                        <a href="#"  target="_blank">more<i class="angle double right icon"></i></a>
+                                        <router-link to="/tag" target="_blank">more<i class="angle double right icon"></i></router-link>
                                     </div>
                                 </div>
                             </div>
                             <div class="ui teal segment">
-                                <a href="#"  target="_blank" class="ui teal tag label m-margin-tb-tiny" >
-                                    <span ></span>
-                                    <div class="detail" ></div>
-                                </a>
+                                <router-link :to="'/tag?tagId=' + item.id" target="_blank" class="ui teal tag label m-margin-tb-tiny" v-for="(item, index) in tags.list" :key="index">
+                                    <span >{{item.name}}</span>
+                                    <div class="detail" >{{item.blogs != null ? item.blogs.total : 0}}</div>
+                                </router-link>
                             </div>
                         </div>
                         <!--最新推荐-->
@@ -118,8 +118,8 @@
                             <div class="ui secondary segment">
                                 <i class="bookmark icon"></i>最新推荐
                             </div>
-                            <div class="ui segment" >
-                                <a href="#"  target="_blank" class="m-black m-text-thin" ></a>
+                            <div class="ui segment" v-for="(item, index) in recommendBlogs" :key="index">
+                                <router-link :to="'/blog?blogId=' + item.id"  target="_blank" class="m-black m-text-thin" >{{item.title}}</router-link>
                             </div>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
     </div>
 </template>
 <script>
-import {queryList, queryRecommentBlogTop} from '../api/blog';
+import {queryList, queryByBlogQuery, queryRecommentBlogTop} from '../api/blog';
 import {queryTypeList} from '../api/type';
 import {queryTagList} from '../api/tag';
 
@@ -147,24 +147,27 @@ export default {
                 recommend : undefined,
                 tagId     : undefined,
                 title     : undefined,
-                typeId    : undefined
+                typeId    : undefined,
+                published : true
             }
         }
     },
     mounted() {
         this.queryList(1, 5);
         this.queryRecommentBlogTop(3);
-        this.queryTagList(1, 999);
+        this.queryTypeList(1, 5);
+        this.queryTagList(1, 5);
     },
     methods: {
         // 获取博客列表
         queryList : function(pageNum, pageSize) {
             let ref = this;
-            queryList(pageNum, pageSize).then(response => {
+            queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {                
+                for(let blog of response.data.blogs.list) {
+                    let updateTime = new Date(blog.updateTime);
+                    blog.updateTime = updateTime.getFullYear() + '-' + (updateTime.getMonth() + 1) + '-' + updateTime.getDate();
+                }
                 ref.blogs = response.data.blogs;
-                ref.types = response.data.types;
-                console.log(ref.blogs);
-                console.log(ref.types);
             })
         },
 

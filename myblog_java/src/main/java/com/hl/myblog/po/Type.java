@@ -1,8 +1,6 @@
 package com.hl.myblog.po;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.pagehelper.PageInfo;
 import com.hl.myblog.common.utils.PrefixString;
 
 /**
@@ -13,10 +11,10 @@ import com.hl.myblog.common.utils.PrefixString;
  */
 
 public class Type {
-    private Long   id;
-    private String name;
+    private Long    id;
+    private String  name;
 
-    private List<Blog> blogs = new ArrayList<Blog>();
+    private PageInfo<Blog> blogs = new PageInfo<Blog>();
 
     public Long getId() {
         return id;
@@ -30,12 +28,12 @@ public class Type {
     public void setName(String name) {
         this.name = name;
     }
-    public List<Blog> getBlogs() {
+    public PageInfo<Blog> getBlogs() {
         return blogs;
     }
-    public void setBlogs(List<Blog> blogs) {
+    public void setBlogs(PageInfo<Blog> blogs) {
         this.blogs = blogs;
-    }
+    } 
 
     public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
@@ -45,10 +43,10 @@ public class Type {
 
         String newPrefix = PrefixString.Indent(prefix);
         if(blogs == null) {
-            sb.append(prefix + "blogs = null" + "\n");
+            sb.append(prefix + "blogs   = null" + "\n");
         } else {
-            for(Blog blog : blogs){
-                sb.append(prefix + "blogs = " + blog.toString(newPrefix));	
+            for(Blog blog : blogs.getList()){
+                sb.append(prefix + "blogs   = " + blog.toString(newPrefix));	
             }
         }
 

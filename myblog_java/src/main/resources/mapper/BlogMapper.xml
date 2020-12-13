@@ -62,7 +62,8 @@
         from
             t_blog as blog,
             t_user as user,
-            t_type as type
+            t_type as type,
+            t_tag  as tag
     </sql>
     <sql id="whereSQL">
         and
@@ -90,6 +91,10 @@
         <if test="recommend == true">
             and
                 blog.recommend = #{recommend}
+        </if>
+        <if test="published == true">
+            and
+                blog.published = #{published}
         </if>
         <include refid="whereSQL"/>
     </select>

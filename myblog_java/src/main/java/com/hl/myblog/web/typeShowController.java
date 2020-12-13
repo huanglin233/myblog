@@ -35,7 +35,7 @@ public class typeShowController {
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
                         @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
     @GetMapping("/types/{pageNum}/{pageSize}")
-    public ResponseResult types(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {		
+    public ResponseResult types(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
         PageInfo<Type> typeList = typeServiceImpl.getTypeList(pageNum, pageSize);
 
         return ResponseResult.success(typeList);

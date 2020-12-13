@@ -22,7 +22,7 @@ public interface BlogMapper {
      * @param  recommend 博客是否为推荐
      * @return
      */
-    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("recommend") Boolean recommend);
+    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("recommend") Boolean recommend, @Param("published") Boolean published);
 
     /**
      * 根据博客ID查询博客信息
