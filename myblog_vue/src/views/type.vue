@@ -16,7 +16,7 @@
                 </div>
                 <div class="ui attached segment m-padded-tb-large">
                     <div class="ui labeled button m-margin-tb-tiny" v-for="(item, index) in types" :key="index">
-                        <a href="#" class="ui basic button" :class="{'teal':(type != null && item.id == type.id)}">{{item.name}}</a>
+                        <a href="#" class="ui basic button" :class="{'teal':(type != null && item.id == type.id)}" @click="queryTypeById(item.id)">{{item.name}}</a>
                         <div class="ui basic left pointing label" :class="{'teal' : (type != null && item.id == type.id)}">{{item.blogs != null ? item.blogs.total : 0}}</div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ export default {
             type      : {},
             blogs     : [],
             blogQuery : {
-                recommend : undefined,
+                recomment : undefined,
                 tagId     : undefined,
                 title     : undefined,
                 typeId    : undefined,
@@ -108,29 +108,29 @@ export default {
     },
     methods: {
         // 根据博客类型id获取博客信息
-        queryTypeById (id) {
+        queryTypeById : function(id) {
             let ref = this;
             queryTypeById(id).then(response => {
-                console.log(response.data);
                 ref.type  = response.data;
                 ref.blogs = ref.type.blogs;
             });
         },
 
         // 获取所有的博客分类列表
-        queryTypeList(pageNum, pageSize) {
+        queryTypeList : function(pageNum, pageSize) {
             let ref = this;
             queryTypeList(pageNum, pageSize).then(response => {
-                console.log(response.data);
                 ref.types = response.data.list;
             });
         },
 
         // 获取所有分类的博客类型列表
-        queryBlogList(pageNum, pageSize) {
+        queryBlogList : function(pageNum, pageSize) {
             let ref = this;
+            if(this.type != null && this.type != undefined) {
+                this.blogQuery.typeId = this.type.id;
+            }
             queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
-                console.log(response.data);
                 ref.blogs = response.data.blogs;
                 ref.types = response.data.types;
             });

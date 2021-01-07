@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hl.myblog.po.Comment;
 import com.hl.myblog.po.User;
 import com.hl.myblog.security.jwt.JWTUtil;
-import com.hl.myblog.service.impl.BlogServiceImpl;
 import com.hl.myblog.service.impl.CommentServiceImpl;
 import com.hl.myblog.service.impl.UserServiceImpl;
 import com.hl.myblog.vo.ResponseResult;
@@ -31,14 +31,14 @@ import io.swagger.annotations.ApiOperation;
  * @date   2020年5月1日
  */
 
+@CrossOrigin
 @RestController
 @Api(value = "博客评论管理模块", tags = "博客评论管理模块接口")
 public class CommentController {
 
     @Autowired
     private CommentServiceImpl commentServiceImpl;
-    @Autowired
-    private BlogServiceImpl    blogServiceImpl;
+
     @Autowired
     private UserServiceImpl    userServiceImpl;
 
@@ -58,8 +58,6 @@ public class CommentController {
     @ApiImplicitParam(name = "comment", value = "博客评论信息", paramType = "query", dataType = "Comment")
     @PostMapping("/comments/add")
     public ResponseResult addComment(@RequestBody Comment comment, HttpServletRequest request) {
-        long blogId = comment.getBlog().getId();
-        comment.setBlog(blogServiceImpl.getBlog(blogId));
         String token = JWTUtil.getToken(request);
         if(token != null) {
             Long userId = JWTUtil.getUserId(JWTUtil.getToken(request));
@@ -67,6 +65,7 @@ public class CommentController {
             if(user != null) {
                 comment.setAvatar(user.getAvatar());
                 comment.setAdminComment(true);
+                comment.setNickname(user.getNickname());
                 if(commentServiceImpl.saveComment(comment) == 1) {
                     return ResponseResult.success();
                 }
@@ -74,8 +73,7 @@ public class CommentController {
             return ResponseResult.error();
         }
         comment.setAvatar(avatar);
-        commentServiceImpl.saveComment(comment);
-        if(commentServiceImpl.saveComment(comment) != 1) {
+        if(commentServiceImpl.saveComment(comment) == 1) {
             return ResponseResult.success();
         }
 

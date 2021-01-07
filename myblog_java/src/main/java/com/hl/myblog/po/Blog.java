@@ -24,7 +24,7 @@ public class Blog {
     private boolean shareStatement;
     private boolean commentabled;
     private boolean published;
-    private boolean recommend;
+    private boolean recomment;
     private Date    createTime;
     private Date    updateTime;
     private String  tagIds;
@@ -97,11 +97,11 @@ public class Blog {
     public void setPublished(boolean published) {
         this.published = published;
     }
-    public boolean isRecommend() {
-        return recommend;
+    public boolean isrecomment() {
+        return recomment;
     }
-    public void setRecommend(boolean recommend) {
-        this.recommend = recommend;
+    public void setrecomment(boolean recomment) {
+        this.recomment = recomment;
     }
     public Date getCreateTime() {
         return createTime;
@@ -177,7 +177,7 @@ public class Blog {
         sb.append(prefix + "shareStatement = " + shareStatement + "\n");
         sb.append(prefix + "commentabled   = " + commentabled   + "\n");
         sb.append(prefix + "published      = " + published      + "\n");
-        sb.append(prefix + "recommend      = " + recommend      + "\n");
+        sb.append(prefix + "recomment      = " + recomment      + "\n");
         sb.append(prefix + "createTime     = " + createTime     + "\n");
         sb.append(prefix + "updateTime     = " + updateTime     + "\n");
         sb.append(prefix + "tagIds         = " + tagIds         + "\n");

@@ -59,9 +59,9 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recommend, Boolean published) {
+    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recomment, Boolean published) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recommend, published));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recomment, published));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -107,7 +107,7 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "获取前[{{size}}]的博客列表", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public List<Blog> ListRecommendBlogTop(Integer size) {
+    public List<Blog> ListrecommentBlogTop(Integer size) {
         PageHelper.startPage(0, size).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, true, true));
         for(Blog blog : pageInfo.getList()) {
@@ -159,7 +159,7 @@ public class BlogServiceImpl implements BlogService{
         for(Tag tag : queryById.getTags()) {
             existTags.add(tag.getId());
         }
-        if(update == 1) {
+        if(update == 1 && blog.getTagIds() != null && !"".equals(blog.getTagIds())) {
             String[] split = blog.getTagIds().split(",");
             for(String tagId : split) {
                 if(existTags == null || existTags.size() < 1) {
@@ -182,7 +182,7 @@ public class BlogServiceImpl implements BlogService{
             }
 
             for(Long tagId : deleteTags) {
-                blogMapper.deleteBlogWithTag(tagId);
+                blogMapper.deleteBlogWithTag(blog.getId(), tagId);
             }
         }
 
@@ -192,14 +192,16 @@ public class BlogServiceImpl implements BlogService{
     @RecordLog(detail = "删除博客归档信息", recordType = RecordType.DELETE, recordObject = RecordObject.BLOG)
     @Override
     public int deleteBlog(Long id) {
-        blogMapper.deleteBlogWithTag(id);
+        Blog queryById = blogMapper.queryById(id);
+        for(Tag tag : queryById.getTags())
+        blogMapper.deleteBlogWithTag(id, tag.getId());
 
         return blogMapper.delete(id);
     }
 
     @Override
     public int deleteBlogWithTag(Long tagId) {
-        return blogMapper.deleteBlogWithTag(tagId);
+        return blogMapper.deleteAllBlogWithTag(tagId);
     }
 
     private void queryBlogTagIds(Blog blog){
@@ -211,6 +213,8 @@ public class BlogServiceImpl implements BlogService{
                tagIds.append("," + tag.getId());
            }
        }
-       blog.setTagIds(tagIds.toString());
+       if(tagIds.length() > 0) {
+           blog.setTagIds(tagIds.toString());
+       }
     }
 }

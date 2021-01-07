@@ -41,7 +41,8 @@ public class tagShowController {
         return ResponseResult.success(tags);
     }
 
-    @ApiImplicitParam(name = "tagId", value = "标签Id", paramType = "path", dataType = "Long")
+    @ApiOperation(value = "获取标签信息", notes = "根据标签id进行查询")
+    @ApiImplicitParam(name = "id", value = "标签Id", paramType = "path", dataType = "Long")
     @GetMapping("/tags/{id}")
     public ResponseResult getTags(@PathVariable("id") Long tagId) {
         Tag tag = tagServiceImpl.getTag(tagId);

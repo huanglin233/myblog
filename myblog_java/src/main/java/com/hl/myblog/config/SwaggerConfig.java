@@ -3,17 +3,21 @@ package com.hl.myblog.config;
 import java.util.ArrayList;
 
 import org.apache.shiro.env.Environment;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.google.common.base.Predicates;
 
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * swagger配置
@@ -22,7 +26,10 @@ import springfox.documentation.spring.web.plugins.Docket;
  * @data   2020年7月11日-下午5:42:03
  */
 @Configuration
-@ConditionalOnProperty(prefix = "swagger2",value = {"enable"},havingValue = "true")
+@EnableSwagger2
+@EnableKnife4j
+@Profile("!prod")
+@Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig {
 
     public Docket docket(Environment environment) {

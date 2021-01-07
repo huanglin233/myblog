@@ -10,68 +10,64 @@
                             <h3 class="ui teal header">标签</h3>
                         </div>
                         <div class="right aligned column">
-                            共<h2 class="ui orange header m-inline-block m-text-thin" th:text=${#arrays.length(tags)}></h2>个
+                            共<h2 class="ui orange header m-inline-block m-text-thin">{{tags.total}}</h2>个
                         </div>
                     </div>
                 </div>
                 <div class="ui attached segment m-padded-tb-large">
-                    <a href="#" th:href="@{/tags/{id}(id=${tag.id})}" target="_blank" class="ui basic left pointing large label m-margin-tb-tiny" th:classappend="${tag.id==activeTagId} ? 'teal'" th:each="tag : ${tags}" th:text="${tag.name}">
-                        <div class="detail" th:text="${#arrays.length(tag.blogs)}"></div>
+                    <a class="ui basic left pointing large label m-margin-tb-tiny" v-for="(item, index) in tags.list" :key="index" :class="{'teal': (tag != null && tag.id == item.id)}" @click="queryTagById(item.id)">
+                        {{item.name}}<div class="detail">{{item.blogs.total}}</div>
                     </a>
                 </div>
                 <!--content-->
-                <div class="ui top attached teal segment">
-                    <div class="ui padded vertical segment m-padded-tb-large m-margin-lr m-mobile-lr-clear" th:each="blog : ${pages.list}">
+               <div class="ui attached segment" v-for="(item, index) in blogs.list" :key="index">
+                    <div class="ui padded vertical segment m-padded-tb-large m-margin-lr m-mobile-lr-clear">
                         <div class="ui mobile reversed stackable grid">
                             <div class="eleven wide column">
                                 <h3 class="ui header">
-                                    <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="m-black" th:text="${blog.title}"></a>
+                                    <router-link :to="'/blog?blogId=' + item.id" target="_blank" class=m-black>{{item.title}}</router-link>
                                 </h3>
-                                <p class="m-text" th:text="|${blog.description}......|"></p>
+                                <p class="m-text">
+                                    {{item.description}}
+                                </p>
                                 <div class="ui grid">
                                     <div class="eleven wide column">
                                         <div class="ui mini horizontal link list">
                                             <div class="item">
-                                                <img th:src="@{${blog.user.avatar}}" class="ui avatar image">
+                                                <img class="ui avatar image" :src="item.user.avatar" alt="">
                                                 <div class="content">
-                                                    <a href="#" class="header" th:text="${blog.user.nickname}"></a>
+                                                    <router-link to="/about" class="header">{{item.user.nickname}}</router-link>
                                                 </div>
                                             </div>
                                             <div class="item">
-                                                <i class="calendar icon"></i>
-                                                <span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span>
+                                                <i class="calendar icon"></i><span>{{item.updateTime}}</span>
                                             </div>
                                             <div class="item">
-                                                <i class="eye icon"></i>
-                                                <span th:text="${blog.views}"></span>
+                                                <i class="eye icon"></i><span>{{item.views}}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="right aligned five wide column">
-                                        <a href="#" target="_blank" class="ui teal basic label m-padded-tb-tiny m-text-thin" th:text="${blog.type.name}"></a>
-                                    </div>
-                                </div>
-                                <div class="row m-margin-top">
-                                    <div class="column">
-                                        <a href="#" th:href="@{/tags/{id}(id=${tag.id})}"  class="ui basic teal left pointing label m-padded-mini m-text-thin" th:each="tag : ${blog.tags}" th:text="${tag.name}"></a>
+                                    <div class="right aligned five wide column" v-if="item.type != null">
+                                        <a href="#" target="_blank" class="ui teal basic label m-padded-tb-tiny m-text-thin">{{item.type.name}}</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">
-                                <img th:src="@{${blog.firstPicture}}" class="ui rounded image">
+                                <a href="#"  target="_blank">
+                                    <img class="ui rounded image" :src="item.firstPicture">
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ui bottom attached segment">
+                <!--分页footer-->
+                 <div class="ui bottom attached segment">
                     <div class="ui middle aligned two column grid">
-                        <div class="column">
-                            <a href="#" th:href="@{'/tags/'+${activeTagId}(page=${pages.pageNum}-1)}"  th:unless="${pages.hasPreviousPage}" class="ui mini teal basic button">上一页</a>
+                        <div class="column" v-if="blogs.hasPreviousPage">
+                            <a class="ui mini teal basic button" @click="queryBlogList(blogs.pageNum - 1,5)">上一页</a>
                         </div>
-                        <div class="right aligned column">
-                            <a href="#" th:href="@{'/tags/'+${activeTagId}(page=${pages.pageNum}+1)}"  th:unless="${pages.hasNextPage}" class="ui mini teal basic button">下一页</a>
+                        <div class="right aligned column" v-if="blogs.hasNextPage">
+                            <a class="ui mini teal basic button" @click="queryBlogList(blogs.pageNum + 1, 5)">下一页</a>
                         </div>
                     </div>
                 </div>
@@ -82,11 +78,64 @@
     </div>
 </template>
 <script>
+import {queryTagById, queryTagList} from '../api/tag';
+import {queryByBlogQuery} from '../api/blog';
+
 export default {
     name : 'tag',
     data() {
         return {
+            tag       : {},
+            tags      : [],
+            blogs     : [],
+            blogQuery : {
+                recomment : undefined,
+                tagId     : undefined,
+                title     : undefined,
+                typeId    : undefined,
+                published : true
+            }
+        }
+    },
+    mounted() {
+        let tagId = this.$route.query.tagId;
+        if(tagId != null && tagId != undefined) {
+            this.queryTagById(tagId);
+        } else {
+            this.queryBlogList(1, 5);
+        }
+        this.queryTagList(1, 999);
+    },
+    methods: {
+        // 根据博客标签id获取标签信息
+        queryTagById : function(id) {
+            let ref = this;
+            queryTagById(id).then(response => {
+                console.log(response);
+                ref.tag = response.data;
+                ref.blogs = ref.tag.blogs;
+            });
+        },
 
+        // 获取所有博客标签列表
+        queryTagList : function(pageNum, pageSize) {
+            let ref = this;
+            queryTagList(pageNum, pageSize).then(response => {
+                ref.tags = response.data;
+                console.log(ref.tags);
+            })
+        },
+
+        // 获取的博客列表信息
+        queryBlogList : function(pageNum, pageSize) {
+            let ref = this;
+            if(this.tag != null && this.tag != undefined) {
+                this.blogQuery.tagId = this.tag.id;
+            }
+            queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
+                console.log(response);
+                ref.blogs = response.data.blogs;
+            })
         }
     }
 }

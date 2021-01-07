@@ -62,7 +62,7 @@ public class BlogShowController {
                         @ApiImplicitParam(name = "blogQuery", value = "博客查询条件", paramType = "Path", dataType = "BlogQuery")})
     @PostMapping("/blogs/search/{pageNum}/{pageSize}")
     public ResponseResult search(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody BlogQuery blogQuery) {
-        PageInfo<Blog>      blogs     = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recommend, blogQuery.published);
+        PageInfo<Blog>      blogs     = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recomment, blogQuery.published);
         List<Type>          types     = typeServiceImpl.getTypeList();
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("types", types);
@@ -84,11 +84,26 @@ public class BlogShowController {
 
         return ResponseResult.success(blog);
     }
+
+    @ApiOperation(value = "博客信息查询", notes = "根据id查询博客的接口并把markdown转化为html")
+    @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
+    @GetMapping("/blog/convert/{id}")
+    public ResponseResult getBlogAndConvert(@PathVariable("id") Long id) {
+        Blog blog = blogServiceImpl.getAndConvert(id);
+        if(blog != null) {
+            // 博客浏览次数+1
+            blog.setViews(blog.getViews() + 1);
+            blogServiceImpl.updateBlog(blog);
+        }
+
+        return ResponseResult.success(blog);
+    }
+
     @ApiOperation(value = "最近推荐博客查询", notes = "查询博客最新推荐的接口")
     @ApiImplicitParam(name = "num", value = "查询推荐博客的数据量", required = true, paramType = "path", dataType = "Integer")
-    @GetMapping("/blogs/recommendBlogTop/{num}")
+    @GetMapping("/blogs/recommentBlogTop/{num}")
     public ResponseResult newBlogs(@PathVariable("num") Integer num) {
-        List<Blog> blogs = blogServiceImpl.ListRecommendBlogTop(num);
+        List<Blog> blogs = blogServiceImpl.ListrecommentBlogTop(num);
 
         return ResponseResult.success(blogs);
     }

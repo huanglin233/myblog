@@ -133,6 +133,21 @@ body {
     display: inline-block !important;
 }
 
+.m-text-center {
+    text-align: center;
+    padding-top: 5em;
+}
+
+/*-----font-color-----*/
+.m-teal {
+    color: green;
+}
+.m-text-center h1 {
+    color:red !important;
+}
+.m-red {
+    color: red;
+}
 
 /*-----container*/
 
@@ -155,11 +170,11 @@ body {
 
 .m-fixed {
     position: fixed !important;
-    z-index: 10 !important;
+    z-index: 9999 !important;
 }
 
 .m-right-bottom {
-    bottom: 0 !important;
+    bottom: 50% !important;
     right: 0 !important;
 }
 
@@ -177,6 +192,11 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+}
+
+/*-----去除调用目录右边的绿线*/
+.toc-link::before {
+    width: 0px !important;
 }
 
 @media screen and (max-width: 768px){

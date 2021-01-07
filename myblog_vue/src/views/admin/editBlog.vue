@@ -79,8 +79,8 @@
                     <div class="inline fields">
                         <div class="field">
                         <div class="ui checkbox">
-                            <input type="checkbox" id="recommend" name="recommend" class="hidden" v-model="blog.recommend">
-                            <label for="recommend">推荐</label>
+                            <input type="checkbox" id="recomment" name="recomment" class="hidden" v-model="blog.recomment">
+                            <label for="recomment">推荐</label>
                         </div>
                         </div>
                         <div class="field">
@@ -131,12 +131,12 @@ export default {
                 content        : undefined,
                 firstPicture   : undefined,
                 flag           : undefined,
-                views          : undefined,
+                views          : 0,
                 appreciation   : false,
                 shareStatement : false,
                 commentabled   : false,
                 published      : false,
-                recommend      : false,
+                recomment      : false,
                 createTime     : undefined,
                 updateTime     : undefined,
                 tagIds         : undefined,

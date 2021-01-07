@@ -19,10 +19,10 @@ public interface BlogMapper {
      * @param  title     博客的标题
      * @param  typeId    博客分类ID
      * @param  tagId     博客标签ID
-     * @param  recommend 博客是否为推荐
+     * @param  recomment 博客是否为推荐
      * @return
      */
-    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("recommend") Boolean recommend, @Param("published") Boolean published);
+    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("recomment") Boolean recomment, @Param("published") Boolean published);
 
     /**
      * 根据博客ID查询博客信息
@@ -90,10 +90,19 @@ public interface BlogMapper {
     /**
      * 删除博客和标签的关联记录
      * 
+     * @Param  blogId 博客id
      * @param  tagId  标签ID
      * @return
      */
-    public int deleteBlogWithTag(@Param("tagId") long tagId);
+    public int deleteBlogWithTag(@Param("blogId") long blogId, @Param("tagId") long tagId);
+
+    /**
+     * 根据博客标签id删除所有的博客和改标签的关联记录
+     * @param  tagId
+     * @return
+     */
+    public int deleteAllBlogWithTag(@Param("tagId") long tagId);
+
     /**
      * 更新博客的浏览量
      * 

@@ -7,6 +7,13 @@ export function queryById(id) {
     })
 }
 
+export function queryByIdAndConvert(id) {
+    return axiosIns({
+        url    : '/blog/convert/' + id,
+        method : 'get'
+    })
+}
+
 export function queryList(pageNum, pageSize) {
     return axiosIns({
         url    : '/blogs/' + pageNum +'/' +pageSize,
@@ -16,7 +23,7 @@ export function queryList(pageNum, pageSize) {
 
 export function queryRecommentBlogTop(num) {
     return axiosIns({
-        url    : '/blogs/recommendBlogTop/' + num,
+        url    : '/blogs/recommentBlogTop/' + num,
         method : 'get'
     })
 }

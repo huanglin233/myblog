@@ -64,6 +64,7 @@ public class ShiroConfig {
         filterRuleMap.put("/admin/doLogin", "anon");
         filterRuleMap.put("/admin/noLogin", "anon");
         filterRuleMap.put("/swagger-ui.html", "anon");
+        filterRuleMap.put("/doc.html", "anon");
         filterRuleMap.put("/**", "anon");
         filterRuleMap.put("/admin/**", "authc");
         // 所有请求通过我们自己的JWT Filter

@@ -35,8 +35,8 @@
                         </div>
                         <div class="field">
                             <div class="ui checkbox">
-                                <input type="checkbox" v-model="blogQuery.recommend">
-                                <label for="recommend">推荐</label>
+                                <input type="checkbox" v-model="blogQuery.recomment">
+                                <label for="recomment">推荐</label>
                             </div>
                         </div>
                         <div class="filed">
@@ -64,7 +64,7 @@
                                 <td v-text="index + 1"></td>
                                 <td v-text="item.title"></td>
                                 <td v-text="item.type != null ? item.type.name : '无分类'" >认知升级</td>
-                                <td v-text="item.recommend == true ? '是' : '否`'">是</td>
+                                <td v-text="item.recomment == true ? '是' : '否`'">是</td>
                                 <td v-text="item.published == true ? '发布' : '草稿'">草稿</td>
                                 <td v-text="item.updateTime"></td>
                                 <td>
@@ -101,7 +101,7 @@ export default {
             blogs     : [],
             types     : [],
             blogQuery : {
-                recommend : undefined,
+                recomment : undefined,
                 tagId     : undefined,
                 title     : undefined,
                 typeId    : undefined

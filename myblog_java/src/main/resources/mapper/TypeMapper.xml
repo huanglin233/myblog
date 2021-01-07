@@ -23,6 +23,18 @@
         where 
             name = #{name}
     </select>
+    <select id="queryByBlogId" resultType="com.hl.myblog.po.Type">
+        select
+            t.id as id,
+            t.name as name
+        from
+            t_type as t,
+            t_blog as b
+        where
+            b.type_id = t.id
+            and
+                b.id = #{bid}
+    </select>
     <insert id="add">
         insert into 
             t_type (name) 

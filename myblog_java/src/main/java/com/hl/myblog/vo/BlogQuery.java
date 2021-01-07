@@ -11,7 +11,7 @@ public class BlogQuery {
     public String  title;
     public Long    typeId;
     public Long    tagId;
-    public Boolean recommend;
+    public Boolean recomment;
     public Boolean published;
 
     public String toString(String prefix) {
@@ -20,7 +20,7 @@ public class BlogQuery {
         sb.append(prefix + "title     = " + title      + "\n");
         sb.append(prefix + "typeId    = " + typeId     + "\n");
         sb.append(prefix + "tagId     = " + tagId      + "\n");
-        sb.append(prefix + "recommend = " + recommend  + "\n");
+        sb.append(prefix + "recomment = " + recomment  + "\n");
         sb.append(prefix + "published = " + published  + "\n");
 
         return sb.toString();

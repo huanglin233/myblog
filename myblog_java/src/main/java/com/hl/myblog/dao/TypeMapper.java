@@ -38,6 +38,14 @@ public interface TypeMapper {
     public Type queryByName(@Param("name") String name);
 
     /**
+     * 根据博客id查询分类信息
+     * 
+     * @param  bid 博客id
+     * @return
+     */
+    public Type queryByBlogId(@Param("bid") long bid);
+
+    /**
      * 添加新的分类
      * 
      * @param  name 分类名称

@@ -118,7 +118,7 @@
                             <div class="ui secondary segment">
                                 <i class="bookmark icon"></i>最新推荐
                             </div>
-                            <div class="ui segment" v-for="(item, index) in recommendBlogs" :key="index">
+                            <div class="ui segment" v-for="(item, index) in recommentBlogs" :key="index">
                                 <router-link :to="'/blog?blogId=' + item.id"  target="_blank" class="m-black m-text-thin" >{{item.title}}</router-link>
                             </div>
                         </div>
@@ -142,9 +142,9 @@ export default {
             blogs          : [],
             types          : [],
             tags           : [],
-            recommendBlogs : [],
+            recommentBlogs : [],
             blogQuery      : {
-                recommend : undefined,
+                recomment : undefined,
                 tagId     : undefined,
                 title     : undefined,
                 typeId    : undefined,
@@ -175,8 +175,8 @@ export default {
         queryRecommentBlogTop : function(num) {
             let ref = this;
             queryRecommentBlogTop(num).then(response => {
-                ref.recommendBlogs = response.data;
-                console.log(ref.recommendBlogs);
+                ref.recommentBlogs = response.data;
+                console.log(ref.recommentBlogs);
             })
         },
 

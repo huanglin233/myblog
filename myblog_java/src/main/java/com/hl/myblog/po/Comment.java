@@ -15,6 +15,8 @@ import com.hl.myblog.common.utils.PrefixString;
 
 public class Comment {
     private Long    id;
+    private Long    blogId;
+    private Long    parentCommentId;
     private String  nickname;
     private String  email;
     private String  content;
@@ -22,8 +24,8 @@ public class Comment {
     private Date    createTime;
     private boolean adminComment;
 
-    private Blog          blog;
-    private Comment       parentComment;
+    private Blog   blog;
+    private String parentComment;
     private List<Comment> replyComments = new ArrayList<Comment>();
 
     public Long getId() {
@@ -31,6 +33,18 @@ public class Comment {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public Long getBlogId() {
+        return blogId;
+    }
+    public void setBlogId(Long blogId) {
+        this.blogId = blogId;
+    }
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
     }
     public String getNickname() {
         return nickname;
@@ -80,39 +94,37 @@ public class Comment {
     public void setReplyComments(List<Comment> replyComments) {
         this.replyComments = replyComments;
     }
-    public Comment getParentComment() {
+    public String getParentComment() {
         return parentComment;
     }
-    public void setParentComment(Comment parentComment) {
+    public void setParentComment(String parentComment) {
         this.parentComment = parentComment;
     }
 
     public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append(prefix + "id            = " + id          + "\n");
-        sb.append(prefix + "nickname      = " + nickname    + "\n");
-        sb.append(prefix + "email         = " + email       + "\n");
-        sb.append(prefix + "content       = " + content     + "\n");
-        sb.append(prefix + "avatar        = " + avatar      + "\n");
-        sb.append(prefix + "createTime    = " + createTime  + "\n");
+        sb.append(prefix + "id              = " + id              + "\n");
+        sb.append(prefix + "nickname        = " + nickname        + "\n");
+        sb.append(prefix + "email           = " + email           + "\n");
+        sb.append(prefix + "content         = " + content         + "\n");
+        sb.append(prefix + "avatar          = " + avatar          + "\n");
+        sb.append(prefix + "createTime      = " + createTime      + "\n");
+        sb.append(prefix + "blogId          = " + blogId          + "\n");
+        sb.append(prefix + "parentCommentId = " + parentCommentId + "\n");
+        sb.append(prefix + "parentComment   = " + parentComment   + "\n");
 
         String newPrefix = PrefixString.Indent(prefix);
         if(blog == null) {
-            sb.append(prefix + "blog          = null");
+            sb.append(prefix + "blog            = null");
         } else {
-            sb.append(prefix + "blog          = " + blog.toString(newPrefix));
-        }
-        if(parentComment == null) {
-            sb.append(prefix + "parentComment = null");
-        } else {
-            sb.append(prefix + "parentComment = " + parentComment.toString(newPrefix));
+            sb.append(prefix + "blog            = " + blog.toString(newPrefix));
         }
         if(replyComments == null) {
-            sb.append(prefix + "replyComments = null");
+            sb.append(prefix + "replyComments   = null");
         } else {
             for(Comment  comment : replyComments) {
-                sb.append(prefix + "replyComments = " + comment.toString(newPrefix));	
+                sb.append(prefix + "replyComments   = " + comment.toString(newPrefix));	
             }
         }
 

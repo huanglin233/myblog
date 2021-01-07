@@ -37,61 +37,77 @@ public class CommentServiceImpl implements CommentService{
     @RecordLog(detail = "添加博客评论", recordType = RecordType.INSERT, recordObject = RecordObject.COMMENT)
     @Override
     public int saveComment(Comment comment) {
-        Comment parentComment = comment.getParentComment();
-        if(parentComment != null && parentComment.getId() != -1) {
-            comment.setParentComment(commentMapper.queryById(comment.getId()));
-        } else {
-           comment.setParentComment(null);
-        }
         comment.setCreateTime(new Date());
 
         return commentMapper.add(comment);
     };
 
     /**
-     *  循环每个顶级的评论节点
+     *  循环出每个顶级的评论节点
      */
     private List<Comment> eachComment(List<Comment> comments) {
-        List<Comment> commentView = new ArrayList<>();
+        List<Comment> commentTopOne = new ArrayList<Comment>();
+        List<Comment> delComments   = new ArrayList<Comment>();
         for(Comment comment : comments) {
             Comment c = new Comment();
-            BeanUtils.copyProperties(comment, c);
-            commentView.add(c);
+            if(comment.getParentCommentId() == null) {
+                BeanUtils.copyProperties(comment, c);
+                commentTopOne.add(c);
+                delComments.add(comment);
+            }
+        }
+        for(Comment delComment : delComments) {
+            comments.remove(delComment);
         }
         //合并评论的各个层次到一级子代集合
-        combineChildren(comments);
+        combineChildren(commentTopOne, comments);
 
-        return comments;
+        return commentTopOne;
     }
 
     /**
      * 合并顶级评论中的所有子节点
      */
-    private void combineChildren(List<Comment> comments) {
-        for(Comment comment : comments) {
-            List<Comment> relys = comment.getReplyComments();
-            for(Comment rely : relys) {
-                recursively(rely);
+    private void combineChildren(List<Comment> commentTopOne, List<Comment> comments) {
+        for(Comment comment : commentTopOne) {
+            List<Comment> replyComments = new ArrayList<Comment>();
+            List<Comment> delComments   = new ArrayList<Comment>();
+            for(Comment childComment : comments) {
+                if(comment.getId() == childComment.getParentCommentId()) {
+                    Comment c = new Comment();
+                    BeanUtils.copyProperties(childComment, c);
+                    recursively(c, comments);
+                    c.setParentComment(comment.getNickname());
+                    replyComments.add(c);
+                    delComments.add(childComment);
+                }
             }
-            comment.setReplyComments(tempReplys);
-            tempReplys = new ArrayList<Comment>();
+            for(Comment delComment : delComments) {
+                comments.remove(delComment);
+            }
+            comment.setReplyComments(replyComments);
         }
     }
 
     /**
      * 循环出所有的子节点
      */
-    private List<Comment> tempReplys = new ArrayList<Comment>();
-    private void recursively(Comment comment) {
-        tempReplys.add(comment); //顶级点添加到临时存放集合
-        if(comment.getReplyComments().size() > 0) {
-            List<Comment> replys = comment.getReplyComments();
-            for(Comment reply : replys) {
-                tempReplys.add(reply);
-                if(reply.getReplyComments().size() > 0) {
-                    recursively(reply);
-                }
+    private void recursively(Comment comment, List<Comment> comments) {
+        List<Comment> replyComments = new ArrayList<Comment>();
+        List<Comment> delComments   = new ArrayList<Comment>();
+        for(Comment commentChild : comments) {
+            if(comment.getId() == commentChild.getParentCommentId()) {
+                Comment c = new Comment();
+                BeanUtils.copyProperties(commentChild, c);
+                recursively(c, comments);
+                c.setParentComment(comment.getNickname());
+                replyComments.add(c);
+                delComments.add(commentChild);
             }
         }
+        for(Comment delComment : replyComments) {
+            comments.remove(delComment);
+        }
+        comment.setReplyComments(replyComments);
     }
 }

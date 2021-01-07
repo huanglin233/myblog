@@ -109,7 +109,7 @@ public class LogAspect {
                 // 方法执行完后增加日志
                 addRecordLog(joinPoint, res, time);
             } catch (Exception e) {
-                logger.info("\n" + "LogAspect 操作失败: " + e.getMessage());
+                logger.info("\n" + "LogAspect 操作失败: " + e.toString());
             }
         }
     }
@@ -137,12 +137,15 @@ public class LogAspect {
     }
 
     private String getUserName() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest       request    = attributes.getRequest();
-        String                   token      = request.getHeader("Authorization");
-        String                  userName    = JWTUtil.getUserName(token);
+        ServletRequestAttributes attributes  = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest       request     = attributes.getRequest();
+        String                   token       = request.getHeader("Authorization");
+        String                   userName    = "游客";
+        if(token != null && !"".equals(token)) {
+            userName    = JWTUtil.getUserName(token);
+        }
 
-        return (userName != null && !userName.equals("")) ? userName : "游客";
+        return userName;
     }
 
     /**

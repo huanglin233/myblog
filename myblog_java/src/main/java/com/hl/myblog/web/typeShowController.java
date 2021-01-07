@@ -41,7 +41,8 @@ public class typeShowController {
         return ResponseResult.success(typeList);
     }
 
-    @ApiImplicitParam(name = "tagId", value = "标签Id", paramType = "path", dataType = "Long")
+    @ApiOperation(value = "获取分类信息", notes = "根据分类id获取分类信息")
+    @ApiImplicitParam(name = "id", value = "标签Id", paramType = "path", dataType = "Long")
     @GetMapping("/types/{id}")
     public ResponseResult getTypes(@PathVariable("id") Long typeId) {
         Type type = typeServiceImpl.getType(typeId);

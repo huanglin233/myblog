@@ -42,6 +42,10 @@ public class TagServiceImpl implements TagService{
     @Override
     public Tag getTag(long id) {
         Tag tag = tagMapper.queryById(id);
+        if(tag != null) {
+            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, null, tag.getId(), null, true);
+            tag.setBlogs(blogList);
+        }
 
         return tag;
     }
@@ -60,7 +64,7 @@ public class TagServiceImpl implements TagService{
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
         PageInfo<Tag> pageInfo = new PageInfo<Tag>(tagMapper.queryAll());
         for(Tag tag : pageInfo.getList()) {
-            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 1, null, null, tag.getId(), null, true);
+            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, null, tag.getId(), null, true);
             tag.setBlogs(blogList);
         }
 
@@ -116,6 +120,7 @@ public class TagServiceImpl implements TagService{
     @Override
     public int deleteTag(Long id) {
         int deleteTag = tagMapper.delete(id);
+        
         deleteTag = blogServiceImpl.deleteBlogWithTag(id);
 
         return deleteTag;

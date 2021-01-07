@@ -49,12 +49,12 @@ fdfs:
       width: 150
       height: 150
    web-server-url: http://${StorageIP}/
-logging: 
+logging:
+      pattern:
+        console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(-){faint} %clr([%14.14t]){faint} %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) %clr(:){faint} %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
       level:
-       root: info
-       com.hl.myblog: debug
-       com.hl.myblog.dao: debug
+        root: info
+        com.hl.myblog: debug
+        com.hl.myblog.dao: debug
       file:
-       name: log/myblog-dev.log
-swagger2:
-      enale: true
+        name: log/myblog-dev.log

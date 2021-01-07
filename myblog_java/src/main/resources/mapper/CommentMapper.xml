@@ -21,21 +21,21 @@
         insert into
             t_comment(admin_comment, avatar, content, email, nickname, blog_id, parent_comment_id, create_time)
             values(
-                #{comment.admin_comment}, #{comment.avatar}, #{comment.content}, #{comment.email}
-                #{comment.nickname}, #{comment.blog_id}, #{comment.parent_comment_id}, #{comment.create_time}
+                #{comment.adminComment}, #{comment.avatar}, #{comment.content}, #{comment.email},
+                #{comment.nickname}, #{comment.blogId}, #{comment.parentCommentId}, #{comment.createTime}
             )
     </insert>
     <update id="update">
         update 
             t_comment
         set
-            admin_comment = #{comment.admin_comment},
+            admin_comment = #{comment.adminComment},
             avatar        = #{comment.avatar},
             content       = #{comment.content},
             email         = #{comment.email},
             nickname      = #{comment.nickname},
             blog_id       = #{comment.blog_id},
-            parent_comment_id = #{comment.parent_comment_id}
+            parent_comment_id = #{comment.parentCommentId}
         where
             id = #{comment.id}
     </update>

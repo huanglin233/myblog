@@ -24,9 +24,7 @@ export default {
 
     },
     methods : {
-        init : function() {
 
-        }
     }
 }
 </script>
