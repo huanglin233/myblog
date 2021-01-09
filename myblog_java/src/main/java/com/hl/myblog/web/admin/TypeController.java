@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.common.constants.HttpStatus;
 import com.hl.myblog.po.Type;
 import com.hl.myblog.service.impl.TypeServiceImpl;
@@ -35,6 +36,7 @@ public class TypeController {
     @Autowired
     TypeServiceImpl typeServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "新建分类", notes = "新建分类接口")
     @ApiImplicitParam(name = "type", value = "分类信息", paramType = "query", dataType = "Type")
     @PostMapping("/type/add")
@@ -52,6 +54,7 @@ public class TypeController {
         }
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "更新分类", notes = "更新分类接口")
     @ApiImplicitParam(name = "type", value = "分类信息", paramType = "query", dataType = "Type")
     @PutMapping("/type/update")
@@ -69,6 +72,7 @@ public class TypeController {
         }
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "删除分类", notes = "删除分类接口")
     @ApiImplicitParam(name = "id", value = "分类id", paramType = "path", dataType = "Long")
     @DeleteMapping("/type/delete/{id}")

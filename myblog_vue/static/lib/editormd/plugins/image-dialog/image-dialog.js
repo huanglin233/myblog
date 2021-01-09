@@ -89,7 +89,7 @@
                 dialog = this.createDialog({
                     title      : imageLang.title,
                     width      : (settings.imageUpload) ? 465 : 380,
-                    height     : 254,
+                    height     : '50%',
                     name       : dialogName,
                     content    : dialogContent,
                     mask       : settings.dialogShowMask,
@@ -203,7 +203,6 @@
                             var formData = new FormData();
                             formData.append("editormd-image-file",$("#editormd-image-file")[0].files[0]);
                             var action = settings.imageUploadURL + (settings.imageUploadURL.indexOf("?") >= 0 ? "&" : "?") + "guid=" + guid;
-                            console.log(formData);
                      
                             $.ajax({
                                 type:"post",
@@ -215,9 +214,7 @@
                                 contentType : false, // 不要设置Content-Type请求头
                                 success:function(data){
                                     // 成功拿到结果放到这个函数 data就是拿到的结果
-                                    console.log(data);
                                     if(data.success == 1){
-                                        console.log(data.message);
                                         dialog.find("[data-url]").val(data.url);
                                     }else{
                                         alert(data.message);

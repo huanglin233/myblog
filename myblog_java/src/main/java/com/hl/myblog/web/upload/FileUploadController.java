@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.common.utils.FastDFSClient;
 import com.hl.myblog.vo.UploadVo;
 
@@ -30,6 +31,7 @@ public class FileUploadController {
     @Autowired
     private FastDFSClient fastDFSClient;
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "上传文件", notes = "上传文件到FastDFS文件服务上")
     @ApiImplicitParam(name = "file", value = "文件对象", paramType = "query", dataType = "MultipartFile")
     @ResponseBody

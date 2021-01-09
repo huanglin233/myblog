@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.common.constants.HttpStatus;
 import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.impl.TagServiceImpl;
@@ -35,6 +36,7 @@ public class TagController {
     @Autowired
     TagServiceImpl tagServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "新建标签", notes = "新建标签接口")
     @ApiImplicitParam(name = "tag", value = "标签信息", paramType = "query", dataType = "Tag")
     @PostMapping("/tag/add")
@@ -52,6 +54,7 @@ public class TagController {
       }
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "更新标签", notes = "更新标签接口")
     @ApiImplicitParam(name = "tag", value = "标签信息", paramType = "query", dataType = "Tag")
     @PutMapping("/tag/update")
@@ -64,6 +67,7 @@ public class TagController {
         }
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "删除标签", notes = "删除标签接口")
     @ApiImplicitParam(name = "id", value = "标签Id", paramType = "path", dataType = "Integer")
     @DeleteMapping("/tag/delete/{id}")

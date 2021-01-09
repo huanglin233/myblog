@@ -40,8 +40,8 @@
                             <div class="ui teal basic left pointing label m-margin-tb-tiny">Vue</div>
                         </div>
                         <div class="ui bottom attached segment">
-                            <a href="https://github.com/huanglin233" class="ui circular icon button"><i class="github icon"></i></a>
-                            <a href="https://gitee.com/huanglin_only" class="ui git circular icon button"><i class="git icon"></i></a>
+                            <a href="https://github.com/huanglin233" target="_blank" class="ui circular icon button"><i class="github icon"></i></a>
+                            <a href="https://gitee.com/huanglin_only" target="_blank" class="ui git circular icon button"><i class="git icon"></i></a>
                             <a href="#" class="ui wechat circular icon button"><i class="weixin icon"></i></a>
                             <a href="#" class="ui qq circular icon button" data-content="2512467648" data-position="bottom center"><i class="qq icon"></i></a>
                         </div>

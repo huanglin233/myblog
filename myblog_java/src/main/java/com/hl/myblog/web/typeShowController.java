@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.po.Type;
 import com.hl.myblog.service.impl.TypeServiceImpl;
 import com.hl.myblog.vo.ResponseResult;
@@ -31,6 +32,7 @@ public class typeShowController {
     @Autowired
     TypeServiceImpl typeServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取分类列表", notes = "根据分页获取分类信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
                         @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
@@ -41,6 +43,7 @@ public class typeShowController {
         return ResponseResult.success(typeList);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取分类信息", notes = "根据分类id获取分类信息")
     @ApiImplicitParam(name = "id", value = "标签Id", paramType = "path", dataType = "Long")
     @GetMapping("/types/{id}")

@@ -108,7 +108,6 @@ export default {
         updateTag : function() {
             let ref = this;
             updateTag(this.tag).then(response => {
-                console.log(response);
                 if(response.code != 200) {
                     ref.errorMsg     = true;
                     ref.errorMsgDesc = response.msg;
@@ -127,10 +126,8 @@ export default {
             }
 
             if(this.tag.id != null && this.tag.id != undefined) {
-                console.log("update");
                 this.updateTag();
             } else {
-                console.log("add");
                 this.addTag();
             }
         }

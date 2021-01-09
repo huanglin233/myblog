@@ -4,9 +4,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://192.168.56.3/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
+      url: jdbc:mysql://huanglin.online/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
       username: root
-      password: root
+      password: huanglin@scala11
       filters: stat,wall,log4j,config
       max-active: 100
       initial-size: 1
@@ -24,8 +24,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-     host: 192.168.56.3
+     host: huanglin.online
      port: 6379
+     password: huanglin233
      jedis:
         pool:
            max-active: -1
@@ -37,11 +38,11 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.hl.myblog.po
 #FastDfs的配置
-StorageIP: 192.168.56.3:8888
+StorageIP: huanglin.online:8888
 fdfs:
    connect-timeout: 1000            #读取inputsream阻塞时间 
    so-timeout: 3000
-   trackerList: 192.168.56.3:22122 #tracker地址
+   trackerList: 172.27.16.4:22122 #tracker地址/只能内网才能上传 
    thumb-image:                     #缩略图生成参数
       width: 150
       height: 150

@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Type;
 import com.hl.myblog.service.impl.BlogServiceImpl;
 import com.hl.myblog.service.impl.TypeServiceImpl;
+import com.hl.myblog.vo.BlogArchive;
 import com.hl.myblog.vo.BlogQuery;
 import com.hl.myblog.vo.ResponseResult;
 
@@ -42,6 +44,7 @@ public class BlogShowController {
     @Autowired
     private TypeServiceImpl typeServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取博客列表", notes = "根据分页获取博客信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
                         @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
@@ -56,6 +59,7 @@ public class BlogShowController {
         return ResponseResult.success(resultMap);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "博客信息搜索", notes = "根据条件搜索博客信息的接口")
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
                         @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer"),
@@ -71,20 +75,17 @@ public class BlogShowController {
         return ResponseResult.success(resultMap);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "博客信息查询", notes = "根据id查询博客的接口")
     @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
     @GetMapping("/blog/{id}")
     public ResponseResult getBlog(@PathVariable("id") Long id) {
         Blog blog = blogServiceImpl.getBlog(id);
-        if(blog != null) {
-            // 博客浏览次数+1
-            blog.setViews(blog.getViews() + 1);
-            blogServiceImpl.updateBlog(blog);
-        }
 
         return ResponseResult.success(blog);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "博客信息查询", notes = "根据id查询博客的接口并把markdown转化为html")
     @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
     @GetMapping("/blog/convert/{id}")
@@ -99,6 +100,7 @@ public class BlogShowController {
         return ResponseResult.success(blog);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "最近推荐博客查询", notes = "查询博客最新推荐的接口")
     @ApiImplicitParam(name = "num", value = "查询推荐博客的数据量", required = true, paramType = "path", dataType = "Integer")
     @GetMapping("/blogs/recommentBlogTop/{num}")
@@ -108,12 +110,13 @@ public class BlogShowController {
         return ResponseResult.success(blogs);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "查询博客归档", notes = "查询博客归档信息接口")
     @GetMapping("/blogs/archives")
     public ResponseResult archives() {
-        Map<String, List<Blog>> blogs  = blogServiceImpl.archiveBlog();
-        Long                    count  = blogServiceImpl.countBlog();
-        Map<String, Object>     hasMap = new HashMap<String, Object>();
+        List<BlogArchive>   blogs = blogServiceImpl.archiveBlog();
+        Long                count  = blogServiceImpl.countBlog();
+        Map<String, Object> hasMap = new HashMap<String, Object>();
         hasMap.put("blogs", blogs);
         hasMap.put("count", count);
 

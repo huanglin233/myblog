@@ -87,4 +87,9 @@ public interface HttpStatus
      * 接口未实现
      */
     public static final int NOT_IMPLEMENTED = 501;
+
+    /**
+     * 访问频繁,超限
+     */
+    public static final int ACCESS_LIMIT = 503;
 }

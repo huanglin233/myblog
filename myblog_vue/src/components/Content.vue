@@ -96,7 +96,6 @@ export default {
         },  
 
         initTocbot : function() {
-            console.log("content = " + this.content);
             tocbot.init({
                 // Where to render the table of contents.
                 tocSelector: '.js-toc',

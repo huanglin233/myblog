@@ -172,7 +172,6 @@ export default {
         queryBlogById : function(id) {
             let ref = this;
             queryById(id).then(response => {
-                console.log(response);
                 ref.blog = response.data;
             })
         },

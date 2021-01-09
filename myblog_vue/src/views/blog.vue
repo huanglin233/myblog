@@ -142,7 +142,6 @@ export default {
     },
     created() {
         this.blogId = this.$route.query.blogId;
-        console.log("blogId =" + this.blogId);
         if(this.blogId != undefined) {
             this.queryById(this.blogId);
             this.queryRecommentByBlogId(this.blogId);
@@ -180,7 +179,6 @@ export default {
         },  
 
         initTocbot : function() {
-            console.log("content = " + this.blog.content);
             tocbot.init({
                 // Where to render the table of contents.
                 tocSelector: '.js-toc',
@@ -209,7 +207,6 @@ export default {
        queryById :function (blogId) {
            let ref = this;
            queryByIdAndConvert(blogId).then(response => {
-               console.log(response);
                ref.blog = response.data;;
            });
        },
@@ -217,7 +214,6 @@ export default {
        queryRecommentByBlogId : function(blogId){
            let ref = this;
            queryRecommentByBlogId(blogId).then(response => {
-               console.log(response.data);
                ref.comments = response.data;
            })
        },
@@ -225,7 +221,6 @@ export default {
        addRecomment : function() {
            let ref = this;
            addRecomment(this.newComment).then(response =>{
-               console.log();
                if(response.code == 200) {
                    ref.queryRecommentByBlogId(ref.blog.id);
                    ref.newComment.email    = undefined;
@@ -237,15 +232,12 @@ export default {
        },
 
        replyTo : function(recommentId, nickname) {
-           console.log("replyId = " + recommentId);
-           console.log("nickname = " + nickname);
            this.newComment.parentCommentId = recommentId;
            this.placeholder = '@' + nickname
        },
 
        reply : function() {
            this.newComment.blogId = this.blog.id;
-           console.log(this.newComment);
            let alertMsg = undefined;
            if(this.newComment.content == null || this.newComment.content == '') {
                alertMsg = '评论内容不能为空';
@@ -261,7 +253,6 @@ export default {
            }
 
            if(alertMsg != undefined) {
-               console.log(alertMsg);
                this.recommentCheck(alertMsg);
 
                return;
@@ -287,6 +278,3 @@ export default {
     }
 }
 </script>
-<style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css');
-</style>

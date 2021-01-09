@@ -1,13 +1,12 @@
 package com.hl.myblog.security.shiro;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,23 +64,23 @@ public class ShiroRealm extends AuthorizingRealm{
      * 验证当前登录用户
      */
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws UnauthenticatedException {
         String token    = (String) auth.getCredentials();
         String userName = JWTUtil.getUserName(token);
         if(StringUtils.isEmpty(userName)) {
-            throw new AuthenticationException("token错误");
+            throw new UnauthenticatedException("token错误");
         }
 
         try {
             if(JWTUtil.verify(token, userName, redisUtil)) {
                 return new SimpleAuthenticationInfo(token, token, getName());
             } else {
-                throw new AuthorizationException("token认证失败");
+                throw new UnauthenticatedException("token认证失败");
             }
         } catch (TokenExpiredException e) {
-            throw new AuthenticationException("token已过期");
+            throw new UnauthenticatedException("token已过期");
         } catch (SignatureVerificationException e) {
-            throw new AuthenticationException("密码不正确!");
+            throw new UnauthenticatedException("密码不正确!");
         }
     }
 

@@ -73,7 +73,7 @@ public class DruidConfig {
         servletRegistrationBean.addInitParameter("loginUsername", "admin");
         servletRegistrationBean.addInitParameter("loginPassword", "admin");
         //是否能够重置数据.
-        servletRegistrationBean.addInitParameter("resetEnable", "true");
+        servletRegistrationBean.addInitParameter("resetEnable", "false");
         return servletRegistrationBean;
 
     }

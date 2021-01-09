@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hl.myblog.annotation.AccessLimit;
+import com.hl.myblog.common.utils.PrefixString;
 import com.hl.myblog.po.Comment;
 import com.hl.myblog.po.User;
 import com.hl.myblog.security.jwt.JWTUtil;
@@ -45,6 +47,7 @@ public class CommentController {
     @Value("${comment.avatar}")
     private String avatar;
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "查询博客评论", notes = "根据博客Id查询博客评论接口")
     @ApiImplicitParam(name = "blogId", value = "博客id", paramType = "path", dataType = "Long")
     @GetMapping("/comments/{blogId}")
@@ -54,10 +57,12 @@ public class CommentController {
         return ResponseResult.success(comments);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "添加博客评论", notes = "添加博客评论接口")
     @ApiImplicitParam(name = "comment", value = "博客评论信息", paramType = "query", dataType = "Comment")
     @PostMapping("/comments/add")
     public ResponseResult addComment(@RequestBody Comment comment, HttpServletRequest request) {
+        System.out.println(comment.toString(PrefixString.Indent1()));
         String token = JWTUtil.getToken(request);
         if(token != null) {
             Long userId = JWTUtil.getUserId(JWTUtil.getToken(request));

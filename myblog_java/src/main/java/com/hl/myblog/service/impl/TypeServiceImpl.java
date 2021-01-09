@@ -51,8 +51,10 @@ public class TypeServiceImpl implements TypeService{
     @Override
     public Type getTypeByName(String name) {
         Type           queryByName = typeMapper.queryByName(name);
-        PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryByName.getId(), null, null, true);
-        queryByName.setBlogs(blogList);
+        if(queryByName != null) {
+            PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryByName.getId(), null, null, true);
+            queryByName.setBlogs(blogList);
+        }
 
         return queryByName;
     }

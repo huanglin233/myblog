@@ -8,8 +8,8 @@
         <div class="m-container-small m-padded-tb-massive">
             <div class="ui error message m-padded-tb-huge" >
                 <div class="ui contianer">
-                <h2>错误</h2>
-                <p>对不起，服务异常，请联系管理员</p>
+                <h2>系统繁忙</h2>
+                <p>{{msg}}</p>
                 </div>
             </div>
         </div>
@@ -22,11 +22,11 @@ export default {
     name : 'error',
     data() {
         return {
-
+            msg : undefined
         }
     },
-    mounted() {
-
+    created() {
+        this.msg = this.$route.query.msg;
     },
     methods: {
 

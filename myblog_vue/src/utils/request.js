@@ -2,9 +2,9 @@ import axios from 'axios'
 import router from './../router'
 import {getToken, setToken, removeToken} from './token'
 
-
 export var axiosIns = axios.create({
-    baseURL: 'http://localhost:8081/',
+    // baseURL: 'http://huanglin.online:9001',
+    baseURL:'/blogApi',
     timeout: 100000,
     headers: {'Content-Type' : 'application/json;charset=utf-8', 'Access-Control-Allow-Origin' : '*'}
 })
@@ -31,6 +31,8 @@ axiosIns.interceptors.response.use(res => {
         router.push('/blog404');
     } else if(code === 500 && router.history.current.path !== 'blog500') {
         router.push('/blog500');
+    } else if(code === 503 && router.history.current.path !== 'error') {
+        router.push('/error?msg=' + res.data.msg);
     } else if(code === 200) {
         let token = res.headers['authorization'];
         if(token != null && token != undefined) {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.impl.TagServiceImpl;
 import com.hl.myblog.vo.ResponseResult;
@@ -31,6 +32,7 @@ public class tagShowController {
     @Autowired
     private TagServiceImpl  tagServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取标签列表", notes = "根据分页获取标签接口")
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
                         @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
@@ -41,6 +43,7 @@ public class tagShowController {
         return ResponseResult.success(tags);
     }
 
+    @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取标签信息", notes = "根据标签id进行查询")
     @ApiImplicitParam(name = "id", value = "标签Id", paramType = "path", dataType = "Long")
     @GetMapping("/tags/{id}")

@@ -11,7 +11,7 @@
                     <div class="ui dropdown item">
                         <div class="text">
                             <img class="ui avatar image" src="https://unsplash.it/100/100?image=1005">
-                            HuangLin
+                            黄林
                         </div>
                         <i class="dropdown icon"></i>   
                         <div class="menu">

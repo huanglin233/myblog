@@ -66,7 +66,7 @@
                                 <td v-text="item.type != null ? item.type.name : '无分类'" >认知升级</td>
                                 <td v-text="item.recomment == true ? '是' : '否`'">是</td>
                                 <td v-text="item.published == true ? '发布' : '草稿'">草稿</td>
-                                <td v-text="item.updateTime"></td>
+                                <td >{{item.updateTime | formatDate}}</td>
                                 <td>
                                     <router-link :to="'/admin/editBlog?blogId=' + item.id" class="ui mini teal basic button">编辑</router-link>
                                     <a class="ui mini red basic button" @click="deleteBlog(item.id)">删除</a>
@@ -163,6 +163,13 @@ export default {
             }).catch(error => {
                 console.log(error);
             })
+        }
+    },
+    filters : {
+        formatDate : function(time) {
+            let updateTime = new Date(time);
+
+            return updateTime.getFullYear() + '-' + (updateTime.getMonth() + 1) + '-' + updateTime.getDate();
         }
     }
 }

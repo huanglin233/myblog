@@ -67,8 +67,10 @@ public class ShiroConfig {
         filterRuleMap.put("/doc.html", "anon");
         filterRuleMap.put("/**", "anon");
         filterRuleMap.put("/admin/**", "authc");
+        filterRuleMap.put("/upload", "authc");
         // 所有请求通过我们自己的JWT Filter
         filterRuleMap.put("/admin/**", "jwt");
+        filterRuleMap.put("/upload", "jwt");
         factoryBean.setLoginUrl("/admin/noLogin");//没有登录的用户请求需要登录的资源时自动跳转到该路径
         factoryBean.setUnauthorizedUrl("/");//没有权限默认跳转
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);

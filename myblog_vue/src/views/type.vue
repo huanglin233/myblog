@@ -1,6 +1,6 @@
 <template>
     <div id="type">
-        <HeaderComponent header="type"></HeaderComponent>
+        <HeaderComponent header="type" @rest="rest"></HeaderComponent>
 
         <div class="m-container-small m-padded-tb-big">
             <div class="ui container">
@@ -92,7 +92,7 @@ export default {
                 recomment : undefined,
                 tagId     : undefined,
                 title     : undefined,
-                typeId    : undefined,
+                typeId    : -1,
                 published : true
             }
         }
@@ -127,13 +127,18 @@ export default {
         // 获取所有分类的博客类型列表
         queryBlogList : function(pageNum, pageSize) {
             let ref = this;
-            if(this.type != null && this.type != undefined) {
+            if(this.type != null && this.type.id != undefined) {
                 this.blogQuery.typeId = this.type.id;
             }
             queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
                 ref.blogs = response.data.blogs;
                 ref.types = response.data.types;
             });
+        },
+
+        rest : function() {
+            this.type = -1;
+            this.queryBlogList(1, 5);
         }
     },
 }

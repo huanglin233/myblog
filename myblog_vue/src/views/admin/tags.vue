@@ -83,7 +83,6 @@ export default {
         queryTagList : function(pageNum, pageSize) {
             let ref = this;
             queryTagList(pageNum, pageSize).then(response => {
-                console.log(response.data.list);
                 ref.tags = response.data;
             })
         },

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.hl.myblog.common.constants.HttpStatus;
 import com.hl.myblog.vo.ResponseResult;
 
 /**
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ShiroException.class)
     public ResponseResult handle401(ShiroException e) {
-        return new ResponseResult(401, "无权访问(Unauthorized):" + e.getMessage());
+        return new ResponseResult(HttpStatus.UNAUTHORIZED, "无权访问(Unauthorized):" + e.getMessage());
     }
 
     /**
@@ -42,7 +43,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseResult handle401(UnauthorizedException e) {
-        return new ResponseResult(401, "无权访问(Unauthorized):当前Subject没有此请求所需权限(" + e.getMessage() + ")");
+        return new ResponseResult(HttpStatus.UNAUTHORIZED, "无权访问(Unauthorized):当前Subject没有此请求所需权限(" + e.getMessage() + ")");
     }
 
     /**
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthenticatedException.class)
     public ResponseResult handle401(UnauthenticatedException e) {
-        return new ResponseResult(401, "无权访问(Unauthorized):当前Subject是匿名Subject，请先登录(This subject is anonymous.)");
+        return new ResponseResult(HttpStatus.UNAUTHORIZED, "无权访问(Unauthorized):当前Subject是匿名Subject，请先登录(This subject is anonymous.)");
     }
 
     /**
@@ -61,7 +62,7 @@ public class GlobalExceptionHandler {
     public ResponseResult validException(BindException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         Map<String, Object> error = this.getValidError(fieldErrors);
-        return new ResponseResult(400, error.get("errorMsg").toString(), error.get("errorList"));
+        return new ResponseResult(HttpStatus.BAD_REQUEST, error.get("errorMsg").toString(), error.get("errorList"));
     }
 
 
@@ -70,7 +71,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseResult handle(NoHandlerFoundException e) {
-        return new ResponseResult(404, e.getMessage());
+        return new ResponseResult(HttpStatus.NOT_FOUND, e.getMessage());
     }
     
     /**
@@ -85,8 +86,13 @@ public class GlobalExceptionHandler {
      * 捕捉其他所有异常
      */
     @ExceptionHandler(Exception.class)
-    public ResponseResult globalException(HttpServletRequest request, Throwable ex) {
-        return new ResponseResult(500, ex.toString() + ": " + ex.getMessage());
+    public ResponseResult globalException(HttpServletRequest request, Throwable e) {
+        return new ResponseResult(HttpStatus.ERROR, e.toString() + ": " + e.getMessage());
+    }
+
+    @ExceptionHandler(AccessLimitException.class)
+    public ResponseResult accessLimitException(AccessLimitException e) {
+        return new ResponseResult(HttpStatus.ACCESS_LIMIT, e.msg);
     }
 
     /**

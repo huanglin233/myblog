@@ -20,9 +20,9 @@
 
                 </div>
                 <div v-for="(value, key) in blogs" :key="key">
-                    <h3 class="ui center aligned header m-padded">{{key}}</h3>
+                    <h3 class="ui center aligned header m-padded">{{value.year}}</h3>
                     <div class="ui fluid vertical menu">
-                        <router-link :to="'/blog?blogId=' + item.id"  target="_blank" class="item" v-for="(item, index) in value" :key="index">
+                        <router-link :to="'/blog?blogId=' + item.id"  target="_blank" class="item" v-for="(item, index) in value.blogs" :key="index">
                             <span>
                                 <i class="mini teal circle icon"></i>
                                 <span>{{item.title}}</span>

@@ -79,13 +79,21 @@
             and 
                 blog.title like concat('%', #{title}, '%')
         </if>
-        <if test="typeId != null">
+        <if test="typeId != null and typeId == -1">
+            and
+                blog.type_id is not null
+        </if>
+        <if test="typeId != null and typeId != -1">
             and
                 type.id = #{typeId}
             and
                 type.id = blog.type_id
         </if>
-        <if test="tagId != null">
+        <if test="tagId != null and tagId == -1">
+            and 
+                tbt.blogs_id = blog.id
+        </if>
+        <if test="tagId != null and tagId != -1">
             and
                 tbt.tags_id = #{tagId}
             and
@@ -111,19 +119,20 @@
     </select>
     <select id="queryGroupYear" resultType="java.lang.String">
         select
-            DATE_FORMAT(update_time,'%Y') as year
+            DATE_FORMAT(create_time,'%Y') as year
         from 
             t_blog
         group by
-                DATE_FORMAT(update_time,'%Y')
+                DATE_FORMAT(create_time,'%Y')
         order by
             year desc
     </select>
     <select id="queryByYear" resultMap="blogBean">
         <include refid="baseSQL"/>  
         where
-            DATE_FORMAT(blog.update_time,'%Y') = #{year}
-        <include refid="whereSQL"/>
+            DATE_FORMAT(blog.create_time,'%Y') = #{year}
+            <include refid="whereSQL"/>
+            Order By blog.create_time Desc
     </select>
     <select id="queryCount" resultType="java.lang.Long">
         select
@@ -135,7 +144,7 @@
         <include refid="baseSQL"/>    
         where
             title like concat("%", #{title}, "%")
-        <include refid="whereSQL"/>
+            <include refid="whereSQL"/>
     </select>
     <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.hl.myblog.po.Blog">
         insert into

@@ -1,10 +1,10 @@
 package com.hl.myblog.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.hl.myblog.po.Blog;
+import com.hl.myblog.vo.BlogArchive;
 
 /**
  * @author huanglin 
@@ -85,7 +85,7 @@ public interface BlogService {
      * 
      * @return
      */
-    Map<String, List<Blog>> archiveBlog();
+    List<BlogArchive> archiveBlog();
 
     /**
      * 博客数统计

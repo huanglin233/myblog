@@ -18,15 +18,19 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.annotation.RecordLog;
 import com.hl.myblog.common.utils.PrefixString;
+import com.hl.myblog.globalHandler.exceptionHandler.AccessLimitException;
 import com.hl.myblog.pojo.RecordLogObj;
+import com.hl.myblog.redis.RedisUtil;
 import com.hl.myblog.security.jwt.JWTUtil;
 
 /**
@@ -40,11 +44,17 @@ import com.hl.myblog.security.jwt.JWTUtil;
 public class LogAspect {
     private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
+    @Autowired
+    RedisUtil redisUtil;
+
     @Pointcut("execution(* com.hl.myblog.web..*.*(..))")
     public void log() {}
 
     @Pointcut("@annotation(com.hl.myblog.annotation.RecordLog)")
     public void recordLog() {}
+
+    @Pointcut("@annotation(com.hl.myblog.annotation.AccessLimit)")
+    public void accessLimit() {}
 
     @Before("log()")
     public void doBefore(JoinPoint joinPoint) {
@@ -175,5 +185,43 @@ public class LogAspect {
             e.printStackTrace();
         }
         return detail;
+    }
+
+    @Before("accessLimit()")
+    public void doAccessLinit(JoinPoint joinPoint) throws Exception {
+        // 获取注解accessLimit信息
+        MethodSignature signature  = (MethodSignature)joinPoint.getSignature();
+        AccessLimit     annotation = signature.getMethod().getAnnotation(AccessLimit.class);
+        // 获取request对象
+        ServletRequestAttributes attributes  = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest       request     = attributes.getRequest();
+        String                   classMethod = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
+
+        int seconds  = annotation.seconds();
+        int maxCount = annotation.maxCount();
+        String ip = request.getHeader("x-forwarded-for");// 有可能ip是代理的
+        if(ip ==null || ip.length() ==0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }      
+        if(ip ==null || ip.length() ==0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }      
+        if(ip ==null || ip.length() ==0 || "unknown".equalsIgnoreCase(ip)) {
+             ip = request.getRemoteAddr();
+        } 
+
+        Integer count = (Integer)redisUtil.get(classMethod + ip);
+        if(count == null){
+            //第一次访问
+            redisUtil.set(classMethod + ip, 1, seconds);
+        }else if(count < maxCount){
+            //加1
+            count = count + 1;
+            redisUtil.set(classMethod + ip, count, seconds);
+        }else{
+            //超出访问次数
+            logger.info("访问过快ip  ===> " + ip + " 且在   " + seconds + " 秒内超过最大限制  ===> " + maxCount + " 次数达到    ====> " + count);
+            throw new AccessLimitException(seconds + "秒内超过最大限制" + maxCount + "次数达到" + count);
+        }
     }
 }

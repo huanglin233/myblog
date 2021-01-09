@@ -264,7 +264,7 @@ li.L8 {
   font-size: 14px;
 }
 .editormd-dialog-container {
-  background-color: violet !important;
+  background-color: #fff !important;
   position: relative;
   padding: 20px;
   line-height: 1.4;

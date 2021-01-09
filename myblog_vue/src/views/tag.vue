@@ -1,6 +1,6 @@
 <template>
     <div id="tag">
-        <HeaderComponent header="tag"></HeaderComponent>
+        <HeaderComponent header="tag" @rest="rest"></HeaderComponent>
 
         <div class="m-container-small m-padded-tb-big">
             <div class="ui container">
@@ -90,7 +90,7 @@ export default {
             blogs     : [],
             blogQuery : {
                 recomment : undefined,
-                tagId     : undefined,
+                tagId     : -1,
                 title     : undefined,
                 typeId    : undefined,
                 published : true
@@ -111,7 +111,6 @@ export default {
         queryTagById : function(id) {
             let ref = this;
             queryTagById(id).then(response => {
-                console.log(response);
                 ref.tag = response.data;
                 ref.blogs = ref.tag.blogs;
             });
@@ -122,20 +121,23 @@ export default {
             let ref = this;
             queryTagList(pageNum, pageSize).then(response => {
                 ref.tags = response.data;
-                console.log(ref.tags);
             })
         },
 
         // 获取的博客列表信息
         queryBlogList : function(pageNum, pageSize) {
             let ref = this;
-            if(this.tag != null && this.tag != undefined) {
+            if(this.tag != null && this.tag.id != undefined) {
                 this.blogQuery.tagId = this.tag.id;
             }
             queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
-                console.log(response);
                 ref.blogs = response.data.blogs;
             })
+        },
+
+        rest : function() {
+            this.tag = null;
+            this.queryBlogList(1, 5);
         }
     }
 }

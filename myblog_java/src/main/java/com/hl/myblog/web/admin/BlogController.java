@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.User;
 import com.hl.myblog.security.jwt.JWTUtil;
@@ -50,6 +51,7 @@ public class BlogController {
     @Autowired
     private UserServiceImpl userServiceImpl;
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "创建一个博客", notes = "添加博客接口")
     @ApiImplicitParam(name = "blog", value = "博客实体", paramType = "query", dataType = "Blog")
     @PostMapping("/blog/add")
@@ -71,6 +73,7 @@ public class BlogController {
         return ResponseResult.error();
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "更新博客", notes = "更新博客接口")
     @ApiImplicitParam(name = "blog", value = "博客实体", paramType = "query", dataType = "Blog")
     @PutMapping("/blog/update")
@@ -91,6 +94,7 @@ public class BlogController {
         return ResponseResult.error();
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "删除博客", notes = "删除博客接口")
     @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
     @DeleteMapping("/blog/delete/{id}")

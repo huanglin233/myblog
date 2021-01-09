@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.po.User;
 import com.hl.myblog.redis.RedisUtil;
 import com.hl.myblog.security.jwt.JWTUtil;
@@ -46,6 +47,7 @@ public class LoginController {
     @Autowired
     RedisUtil redisUtil;
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "用户未登录", notes = "检测到用户未登录,内部调用此接口")
     @RequestMapping(value = "noLogin", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseResult noLogin(String message) {
@@ -53,6 +55,7 @@ public class LoginController {
         return ResponseResult.error(401, "未登录,请先登录");
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "用户没有权限", notes = "检测到用户没有权限,内部调用此接口")
     @RequestMapping(value = "unauthorized", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseResult unauthorized() {
@@ -60,6 +63,7 @@ public class LoginController {
         return ResponseResult.error(401, "没有操作权限");
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "用户登录", notes = "用户登录接口")
     @ApiImplicitParam(name = "user", value = "用户信息", paramType = "query", dataType = "User")
     @PostMapping("/doLogin")
@@ -89,6 +93,7 @@ public class LoginController {
         }
     }
 
+    @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "用户登出", notes = "用户登出接口")
     @DeleteMapping("/loginOut")
     public ResponseResult loginOut(HttpServletRequest request) {

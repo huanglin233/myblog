@@ -2,9 +2,7 @@ package com.hl.myblog.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,7 @@ import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
 import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.BlogService;
+import com.hl.myblog.vo.BlogArchive;
 
 /**
  * @author huanglin 
@@ -118,14 +117,17 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "获取博客归档信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public Map<String, List<Blog>> archiveBlog() {
+    public List<BlogArchive> archiveBlog() {
         List<String> queryGroupYear = blogMapper.queryGroupYear();
-        Map<String, List<Blog>> map = new HashMap<>();
+        List<BlogArchive> blogs = new ArrayList<>();
         for(String year : queryGroupYear) {
-            map.put(year, blogMapper.queryByYear(year));
+            BlogArchive blogArchive = new BlogArchive();
+            blogArchive.year = year;
+            blogArchive.blogs = blogMapper.queryByYear(year);
+            blogs.add(blogArchive);
         }
 
-        return map;
+        return blogs;
     }
 
     @RecordLog(detail = "统计博客数量", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)

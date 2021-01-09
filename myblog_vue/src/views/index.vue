@@ -1,6 +1,6 @@
 <template>
     <div id="index">
-        <HeaderComponent header="index"></HeaderComponent>
+        <HeaderComponent header="index" @search="search" @rest="rest"></HeaderComponent>
 
         <div class="m-container m-padded-tb-big">
             <div class="ui container">
@@ -153,6 +153,7 @@ export default {
         }
     },
     mounted() {
+        this.blogQuery.title = this.$route.query.title;
         this.queryList(1, 5);
         this.queryRecommentBlogTop(3);
         this.queryTypeList(1, 5);
@@ -176,7 +177,6 @@ export default {
             let ref = this;
             queryRecommentBlogTop(num).then(response => {
                 ref.recommentBlogs = response.data;
-                console.log(ref.recommentBlogs);
             })
         },
 
@@ -185,7 +185,6 @@ export default {
             let ref = this;
             queryTypeList(pageNum, pageSize).then(response => {
                 ref.types = response.data;
-                console.log(ref.types);
             })
         },
 
@@ -194,8 +193,17 @@ export default {
             let ref = this;
             queryTagList(pageNum, pageSize).then(response => {
                 ref.tags = response.data;
-                console.log(ref.tags);
             })
+        },
+
+        search : function(title) {
+            this.blogQuery.title = title;
+            this.queryList(1, 5);
+        },
+
+        rest : function() {
+            this.blogQuery.title = null;
+            this.queryList(1,5);
         }
     },
 }
