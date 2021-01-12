@@ -213,11 +213,16 @@ public class LogAspect {
         Integer count = (Integer)redisUtil.get(classMethod + ip);
         if(count == null){
             //第一次访问
-            redisUtil.set(classMethod + ip, 1, seconds);
+            redisUtil.set(classMethod + ip, count);
+            redisUtil.expire(classMethod + ip, seconds);
         }else if(count < maxCount){
             //加1
-            count = count + 1;
-            redisUtil.set(classMethod + ip, count, seconds);
+            if(redisUtil.getExpire(classMethod + ip) == -1) {
+                count = 0;
+            } else {
+                count = count + 1;
+            }
+            redisUtil.incr(classMethod + ip, count);
         }else{
             //超出访问次数
             logger.info("访问过快ip  ===> " + ip + " 且在   " + seconds + " 秒内超过最大限制  ===> " + maxCount + " 次数达到    ====> " + count);

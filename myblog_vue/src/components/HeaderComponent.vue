@@ -10,7 +10,6 @@
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'tag'}" @click="rest('tag')"><i class="mini tags icon m-padded-ri-min"></i>标签</a>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'archive'}" @click="rest('archive')"><i class="mini clone icon m-padded-ri-min"></i>归档</a>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'about'}" @click="rest('about')"><i class="mini info icon m-padded-ri-min"></i>关于我</a>
-                    <router-link to="/admin/index" class="m-item item m-mobile-hide"><i class="mini info icon m-padded-ri-min"></i>后台</router-link>
                     <div class="right m-item item m-mobile-hide">
                         <form name="search" action="#" method="post" target="_blank">
                             <div class="ui teal icon transparent input m-margin-tb-tiny">

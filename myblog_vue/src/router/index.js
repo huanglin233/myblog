@@ -1,18 +1,5 @@
 import Vue        from 'vue'
 import Router     from 'vue-router'
-import index      from '@/views/index'
-import blog       from '@/views/blog'
-import type       from '@/views/type'
-import tag        from '@/views/tag'
-import archive    from '@/views/archive'
-import about      from '@/views/about'
-import adminIndex from '@/views/admin/index'
-import adminBlogs from '@/views/admin/blogs'
-import editBlog   from '@/views/admin/editBlog'
-import tags       from '@/views/admin/tags'
-import editTag    from '@/views/admin/editTag'
-import types      from '@/views/admin/types'
-import editType   from '@/views/admin/editType'
 import login      from '@/views/admin/login'
 import blog404    from '@/views/error/blog404'
 import blog500    from '@/views/error/blog500'
@@ -26,37 +13,37 @@ export default new Router({
     {
       path: '/',
       name: 'index',
-      component: index
+      component:(resolve)=>require(['@/views/index'],resolve)
     },
     {
       path: '/blog',
       name: 'blog',
-      component: blog
+      component:(resolve)=>require(['@/views/blog'],resolve)
     },
     {
       path: '/type',
       name: 'type',
-      component: type
+      component:(resolve)=>require(['@/views/type'],resolve)
     },
     {
       path: '/tag',
       name: 'tag',
-      component: tag
+      component:(resolve)=>require(['@/views/tag'],resolve)
     },
     {
       path: '/archive',
       name: 'archive',
-      component: archive
+      component:(resolve)=>require(['@/views/archive'],resolve)
     },
     {
       path: '/about',
       name: 'about',
-      component: about
+      component:(resolve)=>require(['@/views/about'],resolve)
     },
     {
       path: '/admin/index',
       name: 'adminIndex',
-      component: adminIndex,
+      component:(resolve)=>require(['@/views/admin/index'],resolve),
       meta: {
         needLogin: true
       }
@@ -64,7 +51,7 @@ export default new Router({
     {
       path: '/admin/blogs',
       name: 'adminBlogs',
-      component: adminBlogs,
+      component:(resolve)=>require(['@/views/admin/blogs'],resolve),
       meta: {
         needLogin: true
       }
@@ -72,7 +59,7 @@ export default new Router({
     {
       path: '/admin/editBlog',
       name: 'editBlog',
-      component: editBlog,
+      component:(resolve)=>require(['@/views/admin/editBlog'],resolve),
       meta: {
         needLogin: true
       }
@@ -80,7 +67,7 @@ export default new Router({
     {
       path:'/admin/tags',
       name: 'tags',
-      component:tags,
+      component:(resolve)=>require(['@/views/admin/tags'],resolve),
       meta: {
         needLogin: true
       }
@@ -88,7 +75,7 @@ export default new Router({
     {
       path:'/admin/editTag',
       name: 'editTag',
-      component: editTag,
+      component:(resolve)=>require(['@/views/admin/editTag'],resolve),
       meta: {
         needLogin: true
       }
@@ -96,7 +83,7 @@ export default new Router({
     {
       path: '/admin/types',
       name: 'types',
-      component: types,
+      component:(resolve)=>require(['@/views/admin/types'],resolve),
       meta: {
         needLogin: true
       }
@@ -104,7 +91,7 @@ export default new Router({
     {
       path: '/admin/editType',
       name: 'editType',
-      component: editType,
+      component:(resolve)=>require(['@/views/admin/editType'],resolve),
       meta: {
         needLogin: true
       }

@@ -108,7 +108,7 @@ export default {
 
         initQrcode : function(blogId) {
             var qrcode = new QRCode("qrcode", {
-                text: "http://blog.huanglin.online/blog?blogId=" + blogId,
+                text: "https://huanglin.online/blog?blogId=" + blogId,
                 width: 110,
                 height: 110,
                 colorDark : "#000000",
