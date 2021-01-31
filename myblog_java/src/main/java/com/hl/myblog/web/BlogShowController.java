@@ -93,15 +93,10 @@ public class BlogShowController {
         Blog blog = blogServiceImpl.getAndConvert(id);
         if(blog != null) {
             // 博客浏览次数+1
-<<<<<<< HEAD
             // 重新获取blog信息,因为之前获取的blog信息已将把markdown转化为了html,保存到数据库是不需要转为html
             Blog blogAddView = blogServiceImpl.getBlog(id); 
             blogAddView.setViews(blog.getViews() + 1);
             blogServiceImpl.updateBlog(blogAddView);
-=======
-            blog.setViews(blog.getViews() + 1);
-            blogServiceImpl.updateBlog(blog);
->>>>>>> addad3ce721bf0d381fd7cd93763527815053c1f
         }
 
         return ResponseResult.success(blog);

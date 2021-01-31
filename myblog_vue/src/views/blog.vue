@@ -51,11 +51,7 @@
                                     <Comment :data="comments" v-if="comments != null" @reply="replyTo"></Comment>
                                 </div>
                             </div>
-<<<<<<< HEAD
                             <div class="ui form" v-if="blog != null && blog.commentabled">
-=======
-                            <div class="ui form" v-if="blog != null && blog.recomment">
->>>>>>> addad3ce721bf0d381fd7cd93763527815053c1f
                                 <div class="field">
                                     <textarea name="content" v-model="newComment.content" :placeholder="placeholder"></textarea>
                                 </div>

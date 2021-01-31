@@ -24,15 +24,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-<<<<<<< HEAD
-     host: huanglin.online
-     port: 6379
-     password:
-=======
      host: 127.0.0.1
      port: 6379
      password: 
->>>>>>> addad3ce721bf0d381fd7cd93763527815053c1f
      jedis:
         pool:
            max-active: -1
