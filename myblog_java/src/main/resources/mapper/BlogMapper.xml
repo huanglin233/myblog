@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.myblog.dao.BlogMapper">
+    <resultMap id="blogBean" type="com.hl.myblog.po.Blog">
+        <id column="bid" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="firstPicture" property="firstPicture"/>
+        <result column="flag" property="flag"/>
+        <result column="views" property="views"/>
+        <result column="appreciation" property="appreciation"/>
+        <result column="shareStatement" property="shareStatement" />
+        <result column="commentabled" property="commentabled"/>
+        <result column="published" property="published"/>
+        <result column="recomment" property="recomment"/>
+        <result column="createTime" property="createTime"/>
+        <result column="updateTime" property="updateTime"/>
+        <result column="description" property="description"/>
+        <result column="typeId" property="typeId"/>
+        <result column="userId" property="userId"/>
+        <collection property="type" ofType="com.hl.myblog.po.Type" column="bid"
+            select="com.hl.myblog.dao.TypeMapper.queryByBlogId">
+        </collection>
+        <collection property="tags" ofType="com.hl.myblog.po.Tag" column="bid" 
+            select="com.hl.myblog.dao.TagMapper.queryByBlogId">
+        </collection>
+        <collection property="user" ofType="com.hl.myblog.po.User">
+            <id column="uid" property="id"/>
+            <result column="nickname" property="nickname"/>
+            <result column="userName" property="userName"/>
+            <result column="email" property="email"/>
+            <result column="avatar" property="avatar"/>
+            <result column="type" property="type"/>
+        </collection>
+    </resultMap>
+
+    <sql id="baseSQL">
+        select
+            distinct
+            blog.id as bid,
+            blog.title as title,
+            blog.content as content,
+            blog.first_picture as firstPicture,
+            blog.flag as flag,
+            blog.views as views,
+            blog.appreciation as appreciation,
+            blog.share_statement as shareStatement,
+            blog.commentabled as commentabled,
+            blog.published as published,
+            blog.recomment as recomment,
+            blog.create_time as createTime,
+            blog.update_time as updateTime,
+            blog.description as description,
+            blog.type_id as typeId,
+            blog.user_id as userId,
+            user.id as uid,
+            user.nickname as nickname,
+            user.user_name as username,
+            user.email as email,
+            user.avatar as avatar,
+            user.type as type
+        from
+            t_blog      as blog,
+            t_user      as user,
+            t_type      as type,
+            t_tag       as tag,
+            t_blog_tags as tbt
+    </sql>
+    <sql id="whereSQL">
+        and
+            blog.user_id = user.id
+    </sql>
+
+    <select id="queryAll" resultMap="blogBean">
+        <include refid="baseSQL"/>
+        where 
+            1 = 1     
+        <if test="title != null">
+            and 
+                blog.title like concat('%', #{title}, '%')
+        </if>
+        <if test="typeId != null and typeId == -1">
+            and
+                blog.type_id is not null
+        </if>
+        <if test="typeId != null and typeId != -1">
+            and
+                type.id = #{typeId}
+            and
+                type.id = blog.type_id
+        </if>
+        <if test="tagId != null and tagId == -1">
+            and 
+                tbt.blogs_id = blog.id
+        </if>
+        <if test="tagId != null and tagId != -1">
+            and
+                tbt.tags_id = #{tagId}
+            and
+                tbt.blogs_id = blog.id 
+            and
+                tag.id = #{tagId}
+        </if>
+        <if test="recomment == true">
+            and
+                blog.recomment = #{recomment}
+        </if>
+        <if test="published == true">
+            and
+                blog.published = #{published}
+        </if>
+        <include refid="whereSQL"/>
+    </select>
+    <select id="queryById" resultMap="blogBean">
+        <include refid="baseSQL"/>  
+        where
+            blog.id = #{id}    
+        <include refid="whereSQL"/>
+    </select>
+    <select id="queryGroupYear" resultType="java.lang.String">
+        select
+            DATE_FORMAT(create_time,'%Y') as year
+        from 
+            t_blog
+        group by
+                DATE_FORMAT(create_time,'%Y')
+        order by
+            year desc
+    </select>
+    <select id="queryByYear" resultMap="blogBean">
+        <include refid="baseSQL"/>  
+        where
+            DATE_FORMAT(blog.create_time,'%Y') = #{year}
+            <include refid="whereSQL"/>
+            Order By blog.create_time Desc
+    </select>
+    <select id="queryCount" resultType="java.lang.Long">
+        select
+            count(*)
+        from
+            t_blog
+    </select>
+    <select id="searchByTitle" resultMap="blogBean">
+        <include refid="baseSQL"/>    
+        where
+            title like concat("%", #{title}, "%")
+            <include refid="whereSQL"/>
+    </select>
+    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.hl.myblog.po.Blog">
+        insert into
+            t_blog(
+                appreciation, commentabled, content, create_time, description, first_picture, 
+                flag, published, recomment, share_statement, title, update_time, views, type_id, user_id
+                )
+            values(
+                #{appreciation}, #{commentabled}, #{content}, #{createTime}, #{description},
+                #{firstPicture}, #{flag}, #{published}, #{recomment}, #{shareStatement}, 
+                #{title}, #{updateTime}, #{views}, #{type.id}, #{user.id}
+                )
+    </insert>
+    <update id="update">
+        update 
+            t_blog
+        set
+            appreciation    = #{blog.appreciation},
+            commentabled    = #{blog.commentabled},
+            content         = #{blog.content},
+            create_time     = #{blog.createTime},
+            description     = #{blog.description},
+            first_picture   = #{blog.firstPicture},
+            flag            = #{blog.flag},
+            published       = #{blog.published},
+            recomment       = #{blog.recomment},
+            share_statement = #{blog.shareStatement},
+            title           = #{blog.title},
+            update_time     = #{blog.updateTime},
+            views           = #{blog.views},
+            type_id         = #{blog.type.id},
+            user_id         = #{blog.user.id}
+        where
+            id = #{blog.id}
+    </update>
+    <update id="updateViews">
+        update 
+            t_blog
+        set
+            views = views + 1
+        where
+            id = #{id}
+    </update>
+    <delete id="delete">
+        delete from
+            t_blog
+        where
+            id = #{id}
+    </delete>    
+    <insert id="addBlogWithTag">
+        insert into
+            t_blog_tags(blogs_id, tags_id)
+            values(#{blogId}, #{tagId})
+    </insert>
+    <update id="updateBlogWithTag">
+        update 
+            t_blog_tags
+        set
+            tags_id = #{tagId}
+        where
+            blogs_id = #{blogId}
+    </update>
+    <delete id="deleteBlogWithTag">
+        delete from
+            t_blog_tags
+        where
+                tags_id = #{tagId}
+            and
+                blogs_id = #{blogId}
+    </delete>
+    <delete id="deleteAllBlogWithTag">
+        delete from
+            t_blog_tags
+        where
+            tags_id = #{tagId}
+    </delete>
+</mapper>

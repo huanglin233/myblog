@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.myblog.dao.TypeMapper">
+    <select id="queryAll" resultType="com.hl.myblog.po.Type">
+        select 
+            * 
+        from 
+            t_type
+    </select>
+    <select id="queryById" resultType="com.hl.myblog.po.Type">
+        select 
+            * 
+        from 
+            t_type 
+        where 
+            id = #{id}
+    </select>
+    <select id="queryByName" resultType="com.hl.myblog.po.Type">
+        select 
+            * 
+        from 
+            t_type 
+        where 
+            name = #{name}
+    </select>
+    <select id="queryByBlogId" resultType="com.hl.myblog.po.Type">
+        select
+            t.id as id,
+            t.name as name
+        from
+            t_type as t,
+            t_blog as b
+        where
+            b.type_id = t.id
+            and
+                b.id = #{bid}
+    </select>
+    <insert id="add">
+        insert into 
+            t_type (name) 
+            values(#{name})
+    </insert>
+    <update id="update">
+        update 
+            t_type 
+        set 
+            name = #{name} 
+        where 
+            id = #{id}
+    </update>
+    <delete id="delete">
+        delete from 
+            t_type 
+        where 
+            id = #{id}
+    </delete>
+</mapper>

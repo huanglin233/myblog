@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.myblog.dao.CommentMapper">
+    <select id="queryByBlogId" resultType="com.hl.myblog.po.Comment">
+        select 
+            *
+        from
+            t_comment
+        where
+            blog_id = #{blogId}
+    </select>
+    <select id="queryById" resultType="com.hl.myblog.po.Comment">
+        select
+            *
+        from
+            t_comment
+        where
+            id = #{id}
+    </select>
+    <insert id="add">
+        insert into
+            t_comment(admin_comment, avatar, content, email, nickname, blog_id, parent_comment_id, create_time)
+            values(
+                #{comment.adminComment}, #{comment.avatar}, #{comment.content}, #{comment.email},
+                #{comment.nickname}, #{comment.blogId}, #{comment.parentCommentId}, #{comment.createTime}
+            )
+    </insert>
+    <update id="update">
+        update 
+            t_comment
+        set
+            admin_comment = #{comment.adminComment},
+            avatar        = #{comment.avatar},
+            content       = #{comment.content},
+            email         = #{comment.email},
+            nickname      = #{comment.nickname},
+            blog_id       = #{comment.blog_id},
+            parent_comment_id = #{comment.parentCommentId}
+        where
+            id = #{comment.id}
+    </update>
+    <delete id="delete">
+        delete from
+            t_comment
+        where
+            id = #{id}
+    </delete>
+</mapper>
