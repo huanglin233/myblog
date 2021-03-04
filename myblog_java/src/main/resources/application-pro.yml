@@ -4,7 +4,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
+      url: jdbc:mysql://172.17.0.1/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
       username: root
       password: root
       filters: stat,wall,log4j,config
@@ -24,29 +24,34 @@ spring:
   main:
     allow-bean-definition-overriding: true
   redis:
-     host: 127.0.0.1
+     host: 172.17.0.1
      port: 6379
-     password: 
      jedis:
         pool:
            max-active: -1
            max-wait: 3000ms
      timeout: 3000ms
+  kafka:
+    bootstrap-servers:
+    - 172.17.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 mybatis:
   configuration:
      map-underscore-to-camel-case: true
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.hl.myblog.po
 #FastDfs的配置
-StorageIP: 127.0.0.1:8888
+StorageIP: huanglin.online
 fdfs:
    connect-timeout: 1000            #读取inputsream阻塞时间 
    so-timeout: 3000
-   trackerList: 127.0.0.1:22122 #tracker地址/只能内网才能上传 
+   trackerList: 172.17.0.1:22122 #tracker地址/只能内网才能上传 
    thumb-image:                     #缩略图生成参数
       width: 150
       height: 150
-   web-server-url: http://${StorageIP}/
+   web-server-url: http://${StorageIP}/photo/
 logging:
       pattern:
         console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(-){faint} %clr([%14.14t]){faint} %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) %clr(:){faint} %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"

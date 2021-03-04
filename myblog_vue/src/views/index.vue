@@ -39,7 +39,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="item">
-                                                        <i class="calendar icon"></i><span>{{item.updateTime}}</span>
+                                                        <i class="calendar icon"></i><span>{{item.crateTime}}</span>
                                                     </div>
                                                     <div class="item">
                                                         <i class="eye icon"></i><span>{{item.views}}</span>

@@ -6,6 +6,7 @@ import org.apache.shiro.env.Environment;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.google.common.base.Predicates;
@@ -30,7 +31,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableKnife4j
 @Profile("!prod")
 @Import(BeanValidatorPluginsConfiguration.class)
-public class SwaggerConfig {
+public class SwaggerConfig implements WebMvcConfigurer{
 
     public Docket docket(Environment environment) {
         return new Docket(DocumentationType.SWAGGER_2)

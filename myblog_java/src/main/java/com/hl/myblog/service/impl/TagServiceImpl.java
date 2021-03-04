@@ -78,7 +78,7 @@ public class TagServiceImpl implements TagService{
             if(ids != null && !"".equals(ids)) {
                 String [] array = ids.split(",");
                 for(int i = 0; i < array.length; i++) {
-                    tagIds.add(new Long(array[i]));
+                    tagIds.add(Long.parseLong(array[i]));
                 }
             }
         List<Tag> tags = tagMapper.queryByIds(tagIds);

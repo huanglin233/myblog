@@ -8,6 +8,8 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,8 +17,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,14 +34,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
  */
 @SuppressWarnings("deprecation")
 @Configuration
-public class WebConfig extends WebMvcConfigurationSupport{
+public class WebConfig implements WebMvcConfigurer{
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //需要配置1：----------- 需要告知系统，这是要被当成静态文件的！
-        //第一个方法设置访问路径前缀，第二个方法设置资源路径
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-    }
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
@@ -63,7 +60,7 @@ public class WebConfig extends WebMvcConfigurationSupport{
         // 创建自定义ObjectMapper
         SimpleModule module = new SimpleModule();
         module.addDeserializer(String.class, new JsonHtmlXssDeserializer(String.class));
-        ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().applicationContext(this.getApplicationContext()).build();
+        ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().applicationContext(applicationContext).build();
         objectMapper.registerModule(module);
         // 创建自定义消息转换器
         MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();

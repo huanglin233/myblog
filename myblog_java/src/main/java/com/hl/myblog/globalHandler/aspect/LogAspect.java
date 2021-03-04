@@ -29,6 +29,7 @@ import com.hl.myblog.annotation.AccessLimit;
 import com.hl.myblog.annotation.RecordLog;
 import com.hl.myblog.common.utils.PrefixString;
 import com.hl.myblog.globalHandler.exceptionHandler.AccessLimitException;
+import com.hl.myblog.kafka.KafkaUtil;
 import com.hl.myblog.pojo.RecordLogObj;
 import com.hl.myblog.redis.RedisUtil;
 import com.hl.myblog.security.jwt.JWTUtil;
@@ -46,6 +47,9 @@ public class LogAspect {
 
     @Autowired
     RedisUtil redisUtil;
+
+    @Autowired
+    KafkaUtil kafkautil;
 
     @Pointcut("execution(* com.hl.myblog.web..*.*(..))")
     public void log() {}
@@ -68,6 +72,7 @@ public class LogAspect {
         RequestLog requestLog    = new RequestLog(url, ip, classMethod, args);
 
         logger.info("\n" + "Request :{}", requestLog.toString(PrefixString.Indent1()));
+        kafkautil.sendInfoMessage("Request : { " + requestLog.toString(PrefixString.Indent1()) + "}");
     }
 
     @After("log()")
@@ -75,7 +80,8 @@ public class LogAspect {
 
     @AfterReturning(returning = "result", pointcut = "log()")
     public void doAfterReturing(Object result) {
-        logger.info("\n" + "Result :" +"        \n " + "{}", result);
+        logger.info("\n" + "Result :" + "        \n " + "{}", result);
+        kafkautil.sendInfoMessage("Result : " + "{ " + result + "}");
     }
 
     private class RequestLog {
@@ -120,6 +126,7 @@ public class LogAspect {
                 addRecordLog(joinPoint, res, time);
             } catch (Exception e) {
                 logger.info("\n" + "LogAspect 操作失败: " + e.toString());
+                kafkautil.sendErrorMessage(e);
             }
         }
     }
@@ -141,9 +148,11 @@ public class LogAspect {
             recordLogObj.setRecoredObject(recordLog.recordObject().getValue());
         } else {
             logger.info("recordLog is null");
+            kafkautil.sendInfoMessage("recordLog is null");
         }
 
         logger.info(recordLogObj.toString(PrefixString.Indent1()));
+        kafkautil.sendInfoMessage("recordLong: { " + recordLogObj.toString(PrefixString.Indent1()));
     }
 
     private String getUserName() {
@@ -226,6 +235,7 @@ public class LogAspect {
         }else{
             //超出访问次数
             logger.info("访问过快ip  ===> " + ip + " 且在   " + seconds + " 秒内超过最大限制  ===> " + maxCount + " 次数达到    ====> " + count);
+            kafkautil.sendInfoMessage("访问过快ip  ===> " + ip + " 且在   " + seconds + " 秒内超过最大限制  ===> " + maxCount + " 次数达到    ====> " + count);
             throw new AccessLimitException(seconds + "秒内超过最大限制" + maxCount + "次数达到" + count);
         }
     }

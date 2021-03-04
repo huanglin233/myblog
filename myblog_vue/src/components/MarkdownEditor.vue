@@ -44,8 +44,8 @@ export default {
                 imageUpload : true,
                 imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
                 crossDomainUpload : true,
-                // imageUploadURL : "http://huanglin.online:9001/upload",
-                imageUploadURL : "http://127.0.0.1:8081/upload",
+                imageUploadURL : "https://huanglin.online/blogApi/upload",
+                // imageUploadURL : "http://127.0.0.1:8081/upload",
                 onload : function() {
                     //console.log('onload', this);
                     //this.fullscreen();
