@@ -10,6 +10,7 @@ import axios  from 'axios'
 import '../static/lib/semantic/semantic.min.js'
 import '../static/lib/prism/prism.js'
 import '../static/lib/scrollTo/jquery.scrollTo.js'
+import '../static/lib/editormd/editormd.js'
 
 /** 引入全局的css */
 import 'tocbot/dist/tocbot.css'
@@ -18,6 +19,7 @@ import '../static/css/typo.css'
 import '../static/css/animate.css'
 import '../static/lib/semantic/semantic.min.css'
 import '../static/lib/prism/prism.css'
+import '../static/lib/editormd/css/editormd.css'
 
 /** 引入Token工具类 */
 import {getToken} from './utils/token'

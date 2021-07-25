@@ -7,7 +7,11 @@
             </div>
             <h2 class="ui center aligned header">{{blog.title}}</h2>
             <br>
-            <div id="content" v-if="content != null" v-html="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large"></div>
+            <div id="content" v-if="content != null" v-html="content" class="typo typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large">
+                <!-- <textarea style="display: none" >
+                    ${{content}}
+                </textarea> -->
+            </div>
             <!--标签-->
             <div class="m-padded-lr-responsive">
                 <div class="ui basic teal left pointing label" v-for="(item, index) in blog.tags" :key="index" v-text="item.name"></div>
@@ -49,6 +53,7 @@
     </div>
 </template>
 <script>
+import $ from "jquery";
 import QRCode from 'qrcodejs2';
 
 export default {
@@ -68,6 +73,15 @@ export default {
         if(this.content != null) {
             this.init(this.blog.id);
         }
+        // let editorView = editormd.markdownToHTML("content", {
+        //         htmlDecode      : "style,script,iframe",  // you can filter tags decode
+        //         emoji           : true,
+        //         taskList        : true,
+        //         tex             : true,  // 默认不解析
+        //         flowChart       : true,  // 默认不解析
+        //         sequenceDiagram : true,  // 默认不解析
+        //       });
+        editormd.markdownToHTML("content")
     },
     methods: {
         init : function(blogId) {

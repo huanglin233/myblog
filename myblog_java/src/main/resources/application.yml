@@ -3,7 +3,7 @@ server:
 spring:
   profiles:
     active:
-    - pro
+    - dev
 
 comment:
   avatar: http://ppe.oss-cn-shenzhen.aliyuncs.com/collections/182/4/thumb.jpg

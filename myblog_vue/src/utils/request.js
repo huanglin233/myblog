@@ -3,8 +3,8 @@ import router from './../router'
 import {getToken, setToken, removeToken} from './token'
 
 export var axiosIns = axios.create({
-    // baseURL: 'http://huanglin.online:9001',
-    baseURL:'/blogApi',
+    baseURL: 'http://localhost:8081',
+    // baseURL:'/blogApi',
     timeout: 100000,
     headers: {'Content-Type' : 'application/json;charset=utf-8', 'Access-Control-Allow-Origin' : '*'}
 })

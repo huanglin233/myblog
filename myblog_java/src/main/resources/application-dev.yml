@@ -4,7 +4,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://172.17.0.1/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
+      url: jdbc:mysql://192.168.56.101/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
       username: root
       password: root
       filters: stat,wall,log4j,config
@@ -27,7 +27,7 @@ spring:
     restart:
       enabled: true
   redis:
-     host: 172.17.0.1
+     host: 192.168.56.101
      port: 6379
      jedis:
         pool:
@@ -36,7 +36,7 @@ spring:
      timeout: 3000ms
   kafka:
     bootstrap-servers:
-    - 127.0.0.1:9092
+    - 192.168.56.101:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -46,7 +46,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.hl.myblog.po
 #FastDfs的配置
-StorageIP: 172.17.0.1:8888
+StorageIP: 192.168.56.101:8888
 fdfs:
    connect-timeout: 1000            #读取inputsream阻塞时间 
    so-timeout: 3000
