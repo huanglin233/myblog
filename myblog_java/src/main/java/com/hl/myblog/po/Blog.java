@@ -14,6 +14,7 @@ import com.hl.myblog.common.utils.PrefixString;
  */
 
 public class Blog {
+	
     private Long    id;
     private String  title;
     private String  content;

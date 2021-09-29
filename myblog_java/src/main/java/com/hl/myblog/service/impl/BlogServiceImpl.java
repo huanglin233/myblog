@@ -58,9 +58,9 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recomment, Boolean published) {
+    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, recomment, published));
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, commented, published));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -106,7 +106,7 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "获取前[{{size}}]的博客列表", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public List<Blog> ListrecommentBlogTop(Integer size) {
+    public List<Blog> getCommentBlogTopList(Integer size) {
         PageHelper.startPage(0, size).setOrderBy("blog.update_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, true, true));
         for(Blog blog : pageInfo.getList()) {

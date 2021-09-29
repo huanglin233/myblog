@@ -32,7 +32,7 @@
                             <td v-text="item.name"></td>
                             <td>
                                 <router-link :to="'/admin/editType?typeId=' + item.id" class="ui mini teal basic button">编辑</router-link>
-                                <a class="ui mini red basic button" @click="deleteTypeById(item.id)">删除</a>
+                                <a class="ui mini red basic button" @click="openTip(item.id, item.name)">删除</a>
                             </td>
                         </tr>
                     </thead>
@@ -50,15 +50,19 @@
                 </table>
             </div>
         </div>
-
         <FooterComponent class="footerComponent"></FooterComponent>
+        <tip @isOk="deleteTypeById" ref="tip"></tip>
     </div>
 </template>
 <script>
 import {queryTypeList, deleteTypeById} from '../../api/type'
+import tip from '../../components/Tip.vue'
 
 export default {
     name : 'types',
+    components: {
+        tip
+    },
     data() {
         return {
             errorMsg : false,
@@ -84,6 +88,11 @@ export default {
             queryTypeList(pageNum, pageSize).then(response => {
                 ref.types = response.data
             })
+        },
+
+        /** 打开删除提示框 */
+        openTip : function(id, name){
+            this.$refs.tip.isShow(id, name);
         },
 
         /** 根据分类id删除分类信息 */

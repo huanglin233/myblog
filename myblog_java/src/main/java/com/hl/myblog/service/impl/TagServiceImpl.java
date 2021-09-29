@@ -14,7 +14,6 @@ import com.hl.myblog.common.enums.RecordObject;
 import com.hl.myblog.common.enums.RecordType;
 import com.hl.myblog.dao.TagMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
-import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Tag;
 import com.hl.myblog.service.TagService;
 
@@ -42,10 +41,6 @@ public class TagServiceImpl implements TagService{
     @Override
     public Tag getTag(long id) {
         Tag tag = tagMapper.queryById(id);
-        if(tag != null) {
-            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, null, tag.getId(), null, true);
-            tag.setBlogs(blogList);
-        }
 
         return tag;
     }
@@ -62,13 +57,8 @@ public class TagServiceImpl implements TagService{
     @Override
     public PageInfo<Tag> getTagList(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
-        PageInfo<Tag> pageInfo = new PageInfo<Tag>(tagMapper.queryAll());
-        for(Tag tag : pageInfo.getList()) {
-            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, null, tag.getId(), null, true);
-            tag.setBlogs(blogList);
-        }
 
-        return pageInfo;
+        return new PageInfo<Tag>(tagMapper.queryAll());
     }
 
     @RecordLog(detail = "通过标签ids=[{{ids}}]查询博客标签列表", recordType = RecordType.SELECT, recordObject = RecordObject.TAG)

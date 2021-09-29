@@ -12,7 +12,6 @@ import com.hl.myblog.common.enums.RecordObject;
 import com.hl.myblog.common.enums.RecordType;
 import com.hl.myblog.dao.TypeMapper;
 import com.hl.myblog.globalHandler.exceptionHandler.NotFindException;
-import com.hl.myblog.po.Blog;
 import com.hl.myblog.po.Type;
 import com.hl.myblog.service.TypeService;
 
@@ -26,8 +25,6 @@ public class TypeServiceImpl implements TypeService{
 
     @Autowired
     TypeMapper typeMapper;
-    @Autowired
-    BlogServiceImpl blogServiceImpl;
 
     @RecordLog(detail = "添加博客分类", recordType = RecordType.INSERT, recordObject = RecordObject.TYPE)
     @Override
@@ -40,48 +37,33 @@ public class TypeServiceImpl implements TypeService{
     @RecordLog(detail = "通过分类id=[{{id}}]查询分类信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getType(Long id) {
-        Type queryById = typeMapper.queryById(id);
-        PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryById.getId(), null, null, true);
-        queryById.setBlogs(blogList);
+        Type type = typeMapper.queryById(id);
 
-        return queryById;
+        return type;
     }
 
     @RecordLog(detail = "通过分类name=[{{name}}]查询分类信息", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public Type getTypeByName(String name) {
-        Type           queryByName = typeMapper.queryByName(name);
-        if(queryByName != null) {
-            PageInfo<Blog> blogList    = blogServiceImpl.getBlogList(1, 5, null, queryByName.getId(), null, null, true);
-            queryByName.setBlogs(blogList);
-        }
+        Type type = typeMapper.queryByName(name);
 
-        return queryByName;
+        return type;
     }
 
     @RecordLog(detail = "通过分页查询博客分类列表pageNum=[{{pageNum}}], pageSize=[{{pageSize}}]", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public PageInfo<Type> getTypeList(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("id desc");
-        PageInfo<Type> pageInfo = new PageInfo<Type>(typeMapper.queryAll());
-        for(Type type : pageInfo.getList()) {
-            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, type.getId(), null, null, true);
-            type.setBlogs(blogList);
-        }
+        PageHelper.startPage(pageNum, pageSize);
 
-        return pageInfo;
+        return new PageInfo<Type>(typeMapper.queryAll());
     }
 
     @RecordLog(detail = "查询所有的博客分类", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)
     @Override
     public List<Type> getTypeList() {
-        List<Type> queryAll = typeMapper.queryAll();
-        for(Type type : queryAll) {
-            PageInfo<Blog> blogList = blogServiceImpl.getBlogList(1, 5, null, type.getId(), null, null, true);
-            type.setBlogs(blogList);
-        }
+        List<Type> types = typeMapper.queryAll();
 
-        return queryAll;
+        return types;
     }
 
     @RecordLog(detail = "查询博分类前[{{size}}]的分类列表", recordType = RecordType.SELECT, recordObject = RecordObject.TYPE)

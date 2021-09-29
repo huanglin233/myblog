@@ -10,56 +10,17 @@
                             <h3 class="ui teal header">标签</h3>
                         </div>
                         <div class="right aligned column">
-                            共<h2 class="ui orange header m-inline-block m-text-thin">{{tags.total}}</h2>个
+                            共<h2 class="ui orange header m-inline-block m-text-thin">{{tags.length}}</h2>个
                         </div>
                     </div>
                 </div>
                 <div class="ui attached segment m-padded-tb-large">
-                    <a class="ui basic left pointing large label m-margin-tb-tiny" v-for="(item, index) in tags.list" :key="index" :class="{'teal': (tag != null && tag.id == item.id)}" @click="queryTagById(item.id)">
-                        {{item.name}}<div class="detail">{{item.blogs.total}}</div>
+                    <a class="ui basic left pointing large label m-margin-tb-tiny" v-for="(item, index) in tags" :key="index" :class="{'teal': (tag != null && tag.id == item.id)}" @click="changeTag(item)">
+                        {{item.name}}<div class="detail">{{item.blogsNum}}</div>
                     </a>
                 </div>
                 <!--content-->
-               <div class="ui attached segment" v-for="(item, index) in blogs.list" :key="index">
-                    <div class="ui padded vertical segment m-padded-tb-large m-margin-lr m-mobile-lr-clear">
-                        <div class="ui mobile reversed stackable grid">
-                            <div class="eleven wide column">
-                                <h3 class="ui header">
-                                    <router-link :to="'/blog?blogId=' + item.id" target="_blank" class=m-black>{{item.title}}</router-link>
-                                </h3>
-                                <p class="m-text">
-                                    {{item.description}}
-                                </p>
-                                <div class="ui grid">
-                                    <div class="eleven wide column">
-                                        <div class="ui mini horizontal link list">
-                                            <div class="item">
-                                                <img class="ui avatar image" :src="item.user.avatar" alt="">
-                                                <div class="content">
-                                                    <router-link to="/about" class="header">{{item.user.nickname}}</router-link>
-                                                </div>
-                                            </div>
-                                            <div class="item">
-                                                <i class="calendar icon"></i><span>{{item.updateTime}}</span>
-                                            </div>
-                                            <div class="item">
-                                                <i class="eye icon"></i><span>{{item.views}}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="right aligned five wide column" v-if="item.type != null">
-                                        <a href="#" target="_blank" class="ui teal basic label m-padded-tb-tiny m-text-thin">{{item.type.name}}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="five wide column">
-                                <a href="#"  target="_blank">
-                                    <img class="ui rounded image" :src="item.firstPicture">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <blog-card :blogs="blogs"></blog-card>
                 <!--分页footer-->
                  <div class="ui bottom attached segment">
                     <div class="ui middle aligned two column grid">
@@ -78,66 +39,74 @@
     </div>
 </template>
 <script>
-import {queryTagById, queryTagList} from '../api/tag';
+import {queryTagList} from '../api/tag';
 import {queryByBlogQuery} from '../api/blog';
+import BlogCard from '../components/BlogCard.vue';
 
 export default {
     name : 'tag',
+    components: {
+        BlogCard
+    },
     data() {
         return {
             tag       : {},
             tags      : [],
             blogs     : [],
-            blogQuery : {
-                recomment : undefined,
-                tagId     : -1,
-                title     : undefined,
-                typeId    : undefined,
-                published : true
-            }
         }
     },
     mounted() {
-        let tagId = this.$route.query.tagId;
+        const tagId = this.$route.query.tagId;
         if(tagId != null && tagId != undefined) {
-            this.queryTagById(tagId);
-        } else {
+            this.queryTagList();
+            this.tag.id = tagId;
             this.queryBlogList(1, 5);
+        } else {
+            this.init();
         }
-        this.queryTagList(1, 999);
+        
     },
     methods: {
-        // 根据博客标签id获取标签信息
-        queryTagById : function(id) {
-            let ref = this;
-            queryTagById(id).then(response => {
-                ref.tag = response.data;
-                ref.blogs = ref.tag.blogs;
-            });
+        // 初始化页面数据
+        init : function() {
+            const ref = this;
+            queryTagList().then(response => {
+                ref.tags = response.data.list;
+                if(ref.tags.length > 0) {
+                    ref.tag = ref.tags[0];
+                    ref.queryBlogList(1, 5);
+                }
+            })
         },
 
         // 获取所有博客标签列表
         queryTagList : function(pageNum, pageSize) {
-            let ref = this;
+            const ref = this;
             queryTagList(pageNum, pageSize).then(response => {
-                ref.tags = response.data;
+                ref.tags = response.data.list;
             })
         },
 
         // 获取的博客列表信息
         queryBlogList : function(pageNum, pageSize) {
-            let ref = this;
-            if(this.tag != null && this.tag.id != undefined) {
-                this.blogQuery.tagId = this.tag.id;
-            }
-            queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
-                ref.blogs = response.data.blogs;
+            const ref = this;
+            const blogQuery = {
+                tagId : this.tag.id,
+                published : true
+            } 
+            queryByBlogQuery(pageNum, pageSize, blogQuery).then(response => {
+                ref.blogs = response.data;
             })
         },
 
-        rest : function() {
-            this.tag = null;
+        // 切换博客标签
+        changeTag : function(tag) {
+            this.tag = tag;
             this.queryBlogList(1, 5);
+        },
+
+        rest : function() {
+            this.init();
         }
     }
 }

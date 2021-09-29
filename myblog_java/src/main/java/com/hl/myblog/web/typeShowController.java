@@ -1,10 +1,7 @@
 package com.hl.myblog.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.github.pagehelper.PageInfo;
 import com.hl.myblog.annotation.AccessLimit;
@@ -34,10 +31,10 @@ public class typeShowController {
 
     @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取分类列表", notes = "根据分页获取分类信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
-                        @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
-    @GetMapping("/types/{pageNum}/{pageSize}")
-    public ResponseResult types(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
+    @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "query", dataType = "Integer", required = false),
+                        @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "query", dataType = "Integer", required = false)})
+    @GetMapping("/types")
+    public ResponseResult types(@RequestParam(value = "pageNum", required = false, defaultValue = "0") Integer pageNum, @RequestParam(value = "pageSize", required = false, defaultValue = "999") Integer pageSize) {
         PageInfo<Type> typeList = typeServiceImpl.getTypeList(pageNum, pageSize);
 
         return ResponseResult.success(typeList);

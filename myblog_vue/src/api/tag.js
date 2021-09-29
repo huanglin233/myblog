@@ -9,8 +9,12 @@ export function queryTagById(id) {
 
 export function queryTagList(pageNum, pageSize) {
     return axiosIns({
-        url    : '/tags/' + pageNum + '/' + pageSize,
-        method : 'get'
+        url    : '/tags',
+        method : 'get',
+        params : {
+            pageNum: pageNum,
+            pageSize: pageSize
+        }
     })
 }
 

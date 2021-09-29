@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
@@ -34,10 +35,10 @@ public class tagShowController {
 
     @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取标签列表", notes = "根据分页获取标签接口")
-    @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
-                        @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
-    @GetMapping("/tags/{pageNum}/{pageSize}")
-    public ResponseResult tags(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {		
+    @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "query", dataType = "Integer", required = false), 
+                        @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "query", dataType = "Integer", required = false)})
+    @GetMapping("/tags")
+    public ResponseResult tags(@RequestParam(name = "pageNum", defaultValue = "0", required = false) Integer pageNum, @RequestParam(name = "pageSize", defaultValue = "999", required = false) Integer pageSize) {
         PageInfo<Tag> tags = tagServiceImpl.getTagList(pageNum, pageSize);
 
         return ResponseResult.success(tags);

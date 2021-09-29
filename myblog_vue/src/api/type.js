@@ -9,8 +9,12 @@ export function queryTypeById(id) {
 
 export function queryTypeList(pageNum, pageSize) {
     return axiosIns({
-        url    : '/types/' + pageNum + '/' + pageSize,
-        method : 'get'
+        url    : '/types',
+        method : 'get',
+        params : {
+            pageNum : pageNum,
+            pageSize : pageSize
+        }
     })
 }
 

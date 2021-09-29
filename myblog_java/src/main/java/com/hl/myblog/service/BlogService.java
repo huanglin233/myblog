@@ -37,11 +37,11 @@ public interface BlogService {
      * @param  title      博客标题
      * @param  typeId     博客分类id
      * @param  tagId      博客标签id
-     * @param  recomment  博客是否被推荐
+     * @param  commented  博客是否被推荐
      * @Param  published  博客是发布
      * @return
      */
-    PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean recomment, Boolean published);
+    PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published);
 
     /**
      * 分页获取博客列表
@@ -78,7 +78,7 @@ public interface BlogService {
      * @param  size 获取的博客数
      * @return
      */
-    List<Blog> ListrecommentBlogTop(Integer size);
+    List<Blog> getCommentBlogTopList(Integer size);
 
     /**
      * 获取博客的归档信息

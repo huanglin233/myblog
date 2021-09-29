@@ -42,6 +42,7 @@
 <script>
 import {queryTypeById, addType, updateType} from '../../api/type'
 
+
 export default {
     name : 'editType',
     data() {

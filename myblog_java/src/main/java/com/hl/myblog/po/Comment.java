@@ -14,6 +14,7 @@ import com.hl.myblog.common.utils.PrefixString;
  */
 
 public class Comment {
+	
     private Long    id;
     private Long    blogId;
     private Long    parentCommentId;

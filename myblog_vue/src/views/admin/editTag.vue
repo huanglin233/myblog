@@ -29,7 +29,7 @@
                     </div>
                     
                 </form>
-                <div class="ui right aligend container">
+                <div class="ui right aligend container m-padded-tb">
                     <button type="button" class="ui button" onclick="window.history.go(-1)">返回</button>
                     <button class="ui teal submit button" @click="submit">提交</button>
                 </div>

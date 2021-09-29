@@ -14,6 +14,7 @@ import com.hl.myblog.common.utils.PrefixString;
  */
 
 public class User {
+	
     private Long    id;
     private String  nickname;
     private String  userName;

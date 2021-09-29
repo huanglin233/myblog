@@ -3,9 +3,23 @@
 <mapper namespace="com.hl.myblog.dao.TagMapper">
     <select id="queryAll" resultType="com.hl.myblog.po.Tag">
         select 
-            * 
+            tt.id as id,
+            tt.name as name,
+            count(tb.id) as blogsNum
         from 
-            t_tag
+            t_tag as tt
+        left join
+        	t_blog_tags as tbt
+        on
+        	tt.id = tbt.tags_id
+        left join
+        	t_blog as tb
+        on
+        	tbt.blogs_id = tb.id
+        group by
+        	name, id
+        order by
+        	id desc
     </select>
     <select id="queryById" resultType="com.hl.myblog.po.Tag">
         select 

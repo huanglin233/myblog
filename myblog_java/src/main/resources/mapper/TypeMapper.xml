@@ -2,19 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hl.myblog.dao.TypeMapper">
     <select id="queryAll" resultType="com.hl.myblog.po.Type">
-        select 
-            * 
-        from 
-            t_type
+        select
+            tt.id,
+            tt.name,
+            count(tb.type_id) as blogsNum
+        from
+            t_type as tt
+        left join
+            t_blog as tb
+        on
+            tb.type_id = tt.id
+        group by
+            name,id
+        order by
+            id desc
     </select>
+    
     <select id="queryById" resultType="com.hl.myblog.po.Type">
-        select 
-            * 
-        from 
-            t_type 
-        where 
-            id = #{id}
+        select
+            tt.id,
+            tt.name,
+            count(tb.type_id) as blogsNum
+        from
+            t_type as tt
+        left join
+            t_blog as tb
+        on
+            tb.type_id = #{id}
+        where
+            tt.id = #{id}
+        group by
+            name,id
+        order by
+            id desc
     </select>
+    
     <select id="queryByName" resultType="com.hl.myblog.po.Type">
         select 
             * 
@@ -23,6 +45,7 @@
         where 
             name = #{name}
     </select>
+    
     <select id="queryByBlogId" resultType="com.hl.myblog.po.Type">
         select
             t.id as id,
@@ -35,11 +58,13 @@
             and
                 b.id = #{bid}
     </select>
+    
     <insert id="add">
         insert into 
             t_type (name) 
             values(#{name})
     </insert>
+    
     <update id="update">
         update 
             t_type 
@@ -48,6 +73,7 @@
         where 
             id = #{id}
     </update>
+    
     <delete id="delete">
         delete from 
             t_type 

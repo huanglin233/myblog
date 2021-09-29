@@ -19,10 +19,10 @@ public interface BlogMapper {
      * @param  title     博客的标题
      * @param  typeId    博客分类ID
      * @param  tagId     博客标签ID
-     * @param  recomment 博客是否为推荐
+     * @param  commented 博客是否为推荐
      * @return
      */
-    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("recomment") Boolean recomment, @Param("published") Boolean published);
+    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("commented") Boolean commented, @Param("published") Boolean published);
 
     /**
      * 根据博客ID查询博客信息

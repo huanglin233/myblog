@@ -33,7 +33,7 @@
                             <td v-text="item.name"></td>
                             <td>
                                 <router-link :to="'/admin/editTag?tagId=' + item.id" class="ui mini teal basic button">编辑</router-link>
-                                <a class="ui mini red basic button" @click="deleteTagById(item.id)">删除</a>
+                                <a class="ui mini red basic button" @click="openTip(item.id, item.name)">删除</a>
                             </td>
                         </tr>
                     </tbody>
@@ -51,15 +51,19 @@
                 </table>
             </div>
         </div>
-
         <FooterComponent class="footerComponent"></FooterComponent>
+        <tip @isOk="deleteTagById" ref="tip"></tip>
     </div>
 </template>
 <script>
 import {queryTagList, deleteTagById} from '../../api/tag'
+import tip from '../../components/Tip.vue'
 
 export default {
     name : 'tags',
+    components: {
+        tip
+    },
     data() {
         return {
             errorMsg     : false,
@@ -75,11 +79,13 @@ export default {
             this.queryTagList(1, 5);
         },
 
+        /** 删除提示信息 */
         closeBox : function(e) {
             var messageBox = e.target;
             $(messageBox).closest(".message").transition('fade');
         },
 
+        /** 查询博客标签列表 */
         queryTagList : function(pageNum, pageSize) {
             let ref = this;
             queryTagList(pageNum, pageSize).then(response => {
@@ -87,6 +93,12 @@ export default {
             })
         },
 
+        /** 打开删除提示框 */
+        openTip(id, name) {
+            this.$refs.tip.isShow(id, name);
+        },
+
+        /** 删除博客标签 */
         deleteTagById : function(id) {
             let ref = this;
             deleteTagById(id).then(response => {

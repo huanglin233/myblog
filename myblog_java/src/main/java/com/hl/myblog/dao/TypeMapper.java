@@ -2,10 +2,10 @@ package com.hl.myblog.dao;
 
 import java.util.List;
 
-import com.hl.myblog.po.Type;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import com.hl.myblog.po.Type;
 
 /**
  *  @author huanglin 
@@ -22,7 +22,7 @@ public interface TypeMapper {
     public List<Type> queryAll();
 
     /**
-     * 根据标签id查询分类
+     * 根据分类id查询分类
      * 
      * @param  id 分类id
      * @return

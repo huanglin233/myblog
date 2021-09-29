@@ -1,8 +1,5 @@
 package com.hl.myblog.po;
 
-import com.github.pagehelper.PageInfo;
-import com.hl.myblog.common.utils.PrefixString;
-
 /**
  * 博客类型实体
  * 
@@ -11,10 +8,10 @@ import com.hl.myblog.common.utils.PrefixString;
  */
 
 public class Type {
+	
     private Long    id;
     private String  name;
-
-    private PageInfo<Blog> blogs = new PageInfo<Blog>();
+    private Long    blogsNum;
 
     public Long getId() {
         return id;
@@ -28,27 +25,19 @@ public class Type {
     public void setName(String name) {
         this.name = name;
     }
-    public PageInfo<Blog> getBlogs() {
-        return blogs;
+    public Long getBlogsNum() {
+        return blogsNum;
     }
-    public void setBlogs(PageInfo<Blog> blogs) {
-        this.blogs = blogs;
-    } 
+    public void setBlogsNum(Long blogsNum) {
+        this.blogsNum = blogsNum;
+    }
 
     public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append(prefix + "id    = " + id    + "\n");
-        sb.append(prefix + "name  = " + name  + "\n");
-
-        String newPrefix = PrefixString.Indent(prefix);
-        if(blogs == null) {
-            sb.append(prefix + "blogs   = null" + "\n");
-        } else {
-            for(Blog blog : blogs.getList()){
-                sb.append(prefix + "blogs   = " + blog.toString(newPrefix));	
-            }
-        }
+        sb.append(prefix + "id       = " + id    + "\n");
+        sb.append(prefix + "name     = " + name  + "\n");
+        sb.append(prefix + "blogsNum = " + blogsNum + "\n");
 
         return sb.toString();
     }

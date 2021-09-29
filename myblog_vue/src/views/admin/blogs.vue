@@ -69,7 +69,7 @@
                                 <td >{{item.updateTime | formatDate}}</td>
                                 <td>
                                     <router-link :to="'/admin/editBlog?blogId=' + item.id" class="ui mini teal basic button">编辑</router-link>
-                                    <a class="ui mini red basic button" @click="deleteBlog(item.id)">删除</a>
+                                    <a class="ui mini red basic button" @click="openTip(item.id, item.title)">删除</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -89,13 +89,19 @@
             </div>
         </div>
         <FooterComponent class="footerComponent"></FooterComponent>
+        <tip @isOk="deleteBlog" ref="tip"></tip>
     </div>
 </template>
 <script>
 import {queryByBlogQuery, deleteBlogById} from '../../api/blog'
+import {queryTypeList} from '../../api/type'
+import tip from '../../components/Tip.vue'
 
 export default {
     name : 'blogs',
+    components : {
+        tip
+    },
     data() {
         return {
             blogs     : [],
@@ -117,29 +123,38 @@ export default {
          */
         init : function() {
             this.queryByBlogQuery(1, 5);
+            this.queryTypeList();
         },
 
         /**
          * 分页查询博客列表
          */
         queryBlogs : function(pageNum, pageSize) {
-            let ref = this;
+            const ref = this;
             queryList(pageNum, pageSize).then(response => {
-                ref.blogs = response.data.blogs;
-                ref.types = response.data.types;
+                ref.blogs = response.data;
             }).catch(error => {
                 console.log(error);
             });
         },
 
         /**
+         * 查询博客所有的分类列表
+         */
+        queryTypeList : function() {
+            const ref = this;
+            queryTypeList().then(response => {
+                ref.types = response.data.list;
+            })
+        },
+
+        /**
          * 根据条件进行分页查询
          */
         queryByBlogQuery : function(pageNum, pageSize) {
-            let ref = this;
+            const ref = this;
             queryByBlogQuery(pageNum, pageSize, this.blogQuery).then(response => {
-                ref.blogs = response.data.blogs;
-                ref.types = response.data.types;
+                ref.blogs = response.data;
             }).catch(error => {
                 console.log(error);
             });
@@ -149,15 +164,25 @@ export default {
             $('.ui.type.dropdown').dropdown('clear');
         },
 
-        /** 搜索博客列表 */
+        /**
+         *  搜索博客列表
+         */
         search : function() {
             this.queryByBlogQuery(1, 5);
         },
 
-        /** 根据博客id删除博客 */
-        deleteBlog : function(id) {
-            let ref = this;
+        /**
+         *  打开提示框
+         */
+        openTip(id, title) {
+            this.$refs.tip.isShow(id, title)
+        },
 
+        /**
+         *  根据博客id删除博客
+         */
+        deleteBlog : function(id) {
+            const ref = this;
             deleteBlogById(id).then(response => {
                 ref.queryByBlogQuery(1, 5)
             }).catch(error => {
@@ -167,7 +192,7 @@ export default {
     },
     filters : {
         formatDate : function(time) {
-            let updateTime = new Date(time);
+            const updateTime = new Date(time);
 
             return updateTime.getFullYear() + '-' + (updateTime.getMonth() + 1) + '-' + updateTime.getDate();
         }
