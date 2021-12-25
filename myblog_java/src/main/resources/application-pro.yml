@@ -6,7 +6,7 @@ spring:
       driver-class-name: com.mysql.jdbc.Driver
       url: jdbc:mysql://huanglin.online/myblog?useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectedRows=true
       username: root
-      password: huanglin@scala11
+      password:
       filters: stat,wall,log4j,config
       max-active: 100
       initial-size: 1
