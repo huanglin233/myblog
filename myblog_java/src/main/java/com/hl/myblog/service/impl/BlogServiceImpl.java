@@ -58,9 +58,9 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, commented, published));
+    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published, Boolean leetcode) {
+        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.create_time desc");
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(title, typeId, tagId, commented, published, leetcode));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -70,9 +70,10 @@ public class BlogServiceImpl implements BlogService{
 
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
-    public PageInfo<Blog> getBlogList(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null, null));
+    public PageInfo<Blog> getBlogList(int pageNum, int pageSize, Boolean leetcode) {
+        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.create_time desc");
+
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, null, null, leetcode));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -83,8 +84,8 @@ public class BlogServiceImpl implements BlogService{
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public PageInfo<Blog> getBlogList(Long tagId, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, tagId, null, null));
+        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.create_time desc");
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, tagId, null, null, null));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }
@@ -95,7 +96,7 @@ public class BlogServiceImpl implements BlogService{
     @RecordLog(detail = "通过指定参数查询博客信息", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public PageInfo<Blog> getBlogList(String query, int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.update_time desc");
+        PageHelper.startPage(pageNum, pageSize).setOrderBy("blog.create_time desc");
         PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.searchByTitle(query));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
@@ -107,8 +108,8 @@ public class BlogServiceImpl implements BlogService{
     @RecordLog(detail = "获取前[{{size}}]的博客列表", recordType = RecordType.SELECT, recordObject = RecordObject.BLOG)
     @Override
     public List<Blog> getCommentBlogTopList(Integer size) {
-        PageHelper.startPage(0, size).setOrderBy("blog.update_time desc");
-        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, true, true));
+        PageHelper.startPage(0, size).setOrderBy("blog.create_time desc");
+        PageInfo<Blog> pageInfo = new PageInfo<Blog>(blogMapper.queryAll(null, null, null, true, true, null));
         for(Blog blog : pageInfo.getList()) {
             queryBlogTagIds(blog);
         }

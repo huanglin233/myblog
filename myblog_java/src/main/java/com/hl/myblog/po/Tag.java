@@ -1,5 +1,7 @@
 package com.hl.myblog.po;
 
+import lombok.Data;
+
 /**
  * 标签类实体
  * 
@@ -7,31 +9,13 @@ package com.hl.myblog.po;
  * @date   2020年2月6日
  */
 
+@Data
 public class Tag {
 	
     private Long   id;
     private String name;
     private Long   blogsNum;
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public Long getBlogsNum() {
-		return blogsNum;
-	}
-	public void setBlogsNum(Long blogsNum) {
-		this.blogsNum = blogsNum;
-	}
-	
 	public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");

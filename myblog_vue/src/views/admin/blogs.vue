@@ -31,7 +31,7 @@
                                 <button id="clear-btn" class="ui compact button" @click="clear">
                                     clear
                                 </button>
-                            </div>
+                            </div>  
                         </div>
                         <div class="field">
                             <div class="ui checkbox">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div id="table-container">
-                    <table th:fragment="blogList" class="ui compact teal table">
+                    <table class="ui compact teal table">
                         <thead>
                             <tr>
                                 <th></th>

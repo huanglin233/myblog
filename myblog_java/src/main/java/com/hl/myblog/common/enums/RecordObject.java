@@ -17,7 +17,8 @@ public enum RecordObject {
     TYPE("blogType"),
     COMMENT("blogComment"),
     REDIS("redis"),
-    FASTDFS("fastDFS");
+    FASTDFS("fastDFS"),
+    NOTES("notes");
 
     private String value;
 

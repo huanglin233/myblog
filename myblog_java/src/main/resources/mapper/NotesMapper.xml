@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hl.myblog.dao.NotesMapper">
+
+    <insert id="addNotes">
+        insert t_notes(name, path, create_time, update_time, state, order_id) values (#{notes.name}, #{notes.path}, now(), now(), 1, #{notes.orderId})
+    </insert>
+
+    <update id="updateNotes">
+        update t_notes set name = #{notes.name} , path = #{notes.path} , state = #{notes.state} , update_time = now(), order_id = #{notes.orderId} where id = #{notes.id}
+    </update>
+
+    <delete id="deleteNotes">
+        delete from t_notes where id = #{id}
+    </delete>
+
+    <select id="queryNotes" resultType="com.hl.myblog.po.Notes">
+        select
+            *
+        from
+            t_notes
+        <where>
+            <if test="state != null">
+                state = #{state}
+            </if>
+            <if test="keyWords != null">
+                and name like concat('%', #{keyWords} , '%')
+            </if>
+        </where>
+        order by order_id
+    </select>
+
+    <select id="queryNotesById" resultType="com.hl.myblog.po.Notes" parameterType="java.lang.Long">
+        select
+            *
+        from
+            t_notes
+        where
+            id = #{id}
+    </select>
+</mapper>

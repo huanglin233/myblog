@@ -75,26 +75,26 @@ export default {
                 }
             });
 
-            let tagId = this.$route.query.tagId;
+            const tagId = this.$route.query.tagId;
             if(tagId != null && tagId != undefined) {
                 this.queryTagById(tagId);
             }
         },
 
         closeBox : function(e) {
-            var messageBox = e.target;
+            const messageBox = e.target;
             $(messageBox).closest(".message").transition('fade');
         },
 
         queryTagById : function(id) {
-            let ref = this;
+            const ref = this;
             queryTagById(id).then(response => {
                 ref.tag = response.data;
             })
         },
 
         addTag : function() {
-            let ref = this;
+            const ref = this;
             addTag(this.tag).then(response => {
                 if(response.code != 200) {
                     ref.errorMsg     = true;
@@ -106,7 +106,7 @@ export default {
         },
 
         updateTag : function() {
-            let ref = this;
+            const ref = this;
             updateTag(this.tag).then(response => {
                 if(response.code != 200) {
                     ref.errorMsg     = true;

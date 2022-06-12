@@ -124,7 +124,8 @@ export default {
             const ref = this;
             const blogQuery = {
                 title : this.searchKey,
-                published : true
+                published : true,
+                leetcode : false
             }
             queryByBlogQuery(pageNum, pageSize, blogQuery).then(response => {                
                 for(let blog of response.data.list) {
@@ -165,7 +166,6 @@ export default {
         },
 
         rest : function() {
-            this.blogQuery.title = null;
             this.queryList(1,5);
         }
     },

@@ -39,10 +39,10 @@ public class BlogShowController {
     @AccessLimit(seconds = 1, maxCount = 50)
     @ApiOperation(value = "获取博客列表", notes = "根据分页获取博客信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "pageNum", value = "显示的页数", paramType = "path", dataType = "Integer"), 
-                        @ApiImplicitParam(name = "pageSize", value = "pageSize", paramType = "path", dataType = "Integer")})
+                        @ApiImplicitParam(name = "pageSize", value = "每页条数", paramType = "path", dataType = "Integer")})
     @GetMapping("/blogs/{pageNum}/{pageSize}")
     public ResponseResult blogs(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
-        PageInfo<Blog> blogs = blogServiceImpl.getBlogList(pageNum, pageSize);
+        PageInfo<Blog> blogs = blogServiceImpl.getBlogList(pageNum, pageSize, null);
 
         return ResponseResult.success(blogs);
     }
@@ -54,7 +54,7 @@ public class BlogShowController {
                         @ApiImplicitParam(name = "blogQuery", value = "博客查询条件", paramType = "Path", dataType = "BlogQuery")})
     @PostMapping("/blogs/search/{pageNum}/{pageSize}")
     public ResponseResult search(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody BlogQuery blogQuery) {
-        PageInfo<Blog> blogs = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recomment, blogQuery.published);
+        PageInfo<Blog> blogs = blogServiceImpl.getBlogList(pageNum, pageSize, blogQuery.title, blogQuery.typeId, blogQuery.tagId, blogQuery.recomment, blogQuery.published, blogQuery.leetcode);
 
         return ResponseResult.success(blogs);
     }

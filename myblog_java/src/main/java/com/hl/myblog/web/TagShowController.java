@@ -28,7 +28,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @CrossOrigin
 @Api(value = "标签查询模块", tags = "标签查询接口")
-public class tagShowController {
+public class TagShowController {
 
     @Autowired
     private TagServiceImpl  tagServiceImpl;

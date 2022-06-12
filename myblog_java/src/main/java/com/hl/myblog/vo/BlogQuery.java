@@ -14,6 +14,8 @@ public class BlogQuery {
     public Boolean recomment;
     public Boolean published;
 
+    public Boolean leetcode;
+
     public String toString(String prefix) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
@@ -22,6 +24,7 @@ public class BlogQuery {
         sb.append(prefix + "tagId     = " + tagId      + "\n");
         sb.append(prefix + "recomment = " + recomment  + "\n");
         sb.append(prefix + "published = " + published  + "\n");
+        sb.append(prefix + "leetcode  = " + leetcode   + "\n");
 
         return sb.toString();
     }

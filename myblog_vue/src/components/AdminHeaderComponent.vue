@@ -7,6 +7,7 @@
                 <router-link to="/admin/blogs" class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'blogs'}"><i class="mini home icon m-padded-ri-min"></i>博客</router-link>
                 <router-link to="/admin/types" class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'types'}"><i class="mini idea icon  m-padded-ri-min"></i>分类</router-link>
                 <router-link to="/admin/tags"  class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'tags'}"><i class="mini tags icon  m-padded-ri-min"></i>标签</router-link>
+                <router-link to="/admin/notes"  class="m-item item m-mobile-hide" v-bind:class="{active : AdminHeader == 'notes'}"><i class="mini sticky note icon m-padded-ri-min"></i>笔记</router-link>
                 <div class="right m-item m-mobile-hide menu">
                     <div class="ui dropdown item">
                         <div class="text">

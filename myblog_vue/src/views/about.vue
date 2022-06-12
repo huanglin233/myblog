@@ -6,7 +6,7 @@
                 <div class="ui stackable grid">
                     <div class="ten wide column">
                         <div class="ui segment">
-                            <img src="https://iknow-pic.cdn.bcebos.com/8b82b9014a90f6030add233a3b12b31bb051ed5a?x-bce-process=image/resize,m_lfit,w_600,h_800,limit_1" class="ui rounded image">
+                            <img src="https://tse1-mm.cn.bing.net/th/id/R-C.5b71d169090b27f2e9bf4f8938628f30?rik=6rR0p79DEzqmig&riu=http%3a%2f%2fup.deskbizhi.com%2fpic%2fea%2fee%2fe6%2feaeee6addaa952462a5f854645082cd4.jpg&ehk=VcdWmczYNe0qvt54bxotdD4%2fDpbXWbn3oOu8ZUD60hA%3d&risl=&pid=ImgRaw&r=0" class="ui rounded image">
                         </div>
                     </div>
                     <div class="six wide column">

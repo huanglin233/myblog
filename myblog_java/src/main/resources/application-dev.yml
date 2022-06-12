@@ -50,7 +50,7 @@ StorageIP: 192.168.56.101:8888
 fdfs:
    connect-timeout: 1000            #读取inputsream阻塞时间 
    so-timeout: 3000
-   trackerList: 172.17.0.1:22122 #tracker地址
+   trackerList: 192.168.56.101:22122 #tracker地址
    thumb-image:                     #缩略图生成参数
       width: 150
       height: 150
@@ -59,7 +59,7 @@ logging:
       pattern:
         console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(-){faint} %clr([%14.14t]){faint} %clr(%-40.40logger.%13.13M){cyan} %clr(%3.3L) %clr(:){faint} %msg%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
       level:
-        root: info
+        root: debug
         com.hl.myblog: debug
         com.hl.myblog.dao: debug
       file:

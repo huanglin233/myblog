@@ -39,18 +39,20 @@ public interface BlogService {
      * @param  tagId      博客标签id
      * @param  commented  博客是否被推荐
      * @Param  published  博客是发布
+     * @param  leetcode true只查询标签为leetcode的博客/false查询不包含leetcode标签的博客
      * @return
      */
-    PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published);
+    PageInfo<Blog> getBlogList(int pageNum, int pageSize, String title, Long typeId, Long tagId, Boolean commented, Boolean published, Boolean leetcode);
 
     /**
      * 分页获取博客列表
      * 
      * @param  pageSize 每页显示的条数
      * @param  pageNum  显示的页数
+     * @param  leetcode true只查询标签为leetcode的博客/false查询不包含leetcode标签的博客
      * @return
      */
-    PageInfo<Blog> getBlogList(int pageNum, int pageSize);
+    PageInfo<Blog> getBlogList(int pageNum, int pageSize, Boolean leetcode);
 
     /**
      * 分页获取指定博客标签下的博客列表

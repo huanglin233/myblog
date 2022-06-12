@@ -42,6 +42,8 @@
         <result column="createTime" property="createTime"/>
         <result column="updateTime" property="updateTime"/>
         <result column="description" property="description"/>
+        <result column="recomment" property="recomment"/>
+        <result column="published" property="published"/>
         <result column="typeId" property="typeId"/>
         <result column="userId" property="userId"/>
         <collection property="type" ofType="com.hl.myblog.po.Type" column="bid"
@@ -109,6 +111,10 @@
             blog.description as description,
             blog.type_id as typeId,
             blog.user_id as userId,
+            blog.share_statement as shareStatement,
+            blog.commentabled as commentabled,
+            blog.published as published,
+            blog.recomment as recomment,
             user.id as uid,
             user.nickname as nickname,
             user.user_name as username,
@@ -134,18 +140,30 @@
                 blog.type_id = type.id
             </if>
         </if>
-        <if test="tagId != null">
-        inner join
-            t_blog_tags as tbt
-        on
-            tbt.blogs_id = blog.id
-            <if test="typeId != -1">
+        <if test="leetcode != null or tagId != null">
             inner join
-                t_tag as tag
-                on
-                    tag.id = #{tagId}
+            t_blog_tags as tbt
+            on
+            tbt.blogs_id = blog.id
+            inner join
+            t_tag as tag
+            on
+            <if test="leetcode != null">
+                tbt.tags_id = tag.id
+                and
+                <if test="leetcode == true">
+                    tag.name = 'LeetCode'
+                </if>
+                <if test="leetcode != true">
+                    tag.name != 'LeetCode'
+                </if>
+            </if>
+            <if test="tagId != null and tagId != -1">
+                <if test="leetcode != null">
                     and
-                    tbt.tags_id = #{tagId}
+                </if>
+                tag.id = #{tagId}
+                and tbt.tags_id = #{tagId}
             </if>
         </if>
         <where>

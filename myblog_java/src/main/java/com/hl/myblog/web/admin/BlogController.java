@@ -53,7 +53,7 @@ public class BlogController {
 
     @AccessLimit(seconds = 1, maxCount = 20)
     @ApiOperation(value = "创建一个博客", notes = "添加博客接口")
-    @ApiImplicitParam(name = "blog", value = "博客实体", paramType = "query", dataType = "Blog")
+    @ApiImplicitParam(name = "blog", value = "博客实体", paramType = "body", dataType = "Blog")
     @PostMapping("/blog/add")
     public ResponseResult addBlog(@RequestBody Blog blog, HttpServletRequest request) {
         if(!StringUtils.isEmpty(blog)) {
@@ -94,7 +94,7 @@ public class BlogController {
         return ResponseResult.error();
     }
 
-    @AccessLimit(seconds = 1, maxCount = 20)
+    @AccessLimit(seconds = 1, maxCount = 10)
     @ApiOperation(value = "删除博客", notes = "删除博客接口")
     @ApiImplicitParam(name = "id", value = "博客id", paramType = "path", dataType = "Long")
     @DeleteMapping("/blog/delete/{id}")

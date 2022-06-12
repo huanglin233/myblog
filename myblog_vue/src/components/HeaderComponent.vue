@@ -6,6 +6,8 @@
                 <div class="ui secondary stackable menu">
                     <h2 class="ui teal header item">HLBlog</h2>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'index'}" @click="rest('index')"><i class="mini home icon m-padded-ri-min"></i>首页</a>
+                    <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'leetcode'}" @click="rest('leetcode')"><i class="mini code icon m-padded-ri-min"></i>LeetCode</a>
+                    <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'bj'}" @click="rest('bj')"><i class="mini sticky note icon m-padded-ri-min"></i>学习笔记</a>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'type'}" @click="rest('type')"><i class="mini idea icon m-padded-ri-min"></i>分类</a>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'tag'}" @click="rest('tag')"><i class="mini tags icon m-padded-ri-min"></i>标签</a>
                     <a class="m-item item m-mobile-hide" v-bind:class="{active : header == 'archive'}" @click="rest('archive')"><i class="mini clone icon m-padded-ri-min"></i>归档</a>

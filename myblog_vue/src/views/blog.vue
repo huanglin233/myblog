@@ -12,7 +12,7 @@
                             </div>
                             <div class="item">
                                 <i class="calendar icon"></i>
-                                <span>{{blog.updateTime | formatDate}}</span>
+                                <span>{{blog.createTime | formatDate}}</span>
                             </div>
                             <div class="item">
                                 <i class="eye icon"></i>

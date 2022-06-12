@@ -22,7 +22,8 @@ public interface BlogMapper {
      * @param  commented 博客是否为推荐
      * @return
      */
-    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("commented") Boolean commented, @Param("published") Boolean published);
+    public List<Blog> queryAll(@Param("title") String title, @Param("typeId") Long typeId, @Param("tagId") Long tagId, @Param("commented") Boolean commented, @Param("published") Boolean published, @Param("leetcode") Boolean leetcode);
+
 
     /**
      * 根据博客ID查询博客信息
